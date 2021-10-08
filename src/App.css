@@ -1,0 +1,20 @@
+.bgKuning{
+    background: #f7ef85
+}
+
+.data:hover{
+    background: #eee
+}
+
+.pointer{
+    cursor: pointer
+}
+
+
+#map-thematic {
+    margin: 0;
+    height: 45vh;
+    width: 100%;
+    font-family: sans-serif;
+  }
+  
