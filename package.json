@@ -1,6 +1,6 @@
 {
   "name": "fta-geoportal",
-  "homepage": "geoportal",
+  "homepage": "geoportal/new",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
