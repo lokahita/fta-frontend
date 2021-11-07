@@ -96,10 +96,8 @@ const ImageList = styled.div`
 `;
 
 const BottomThree = styled.div`
-  overflow-x: hidden;
   font-size: 12px;
 `;
 const BottomFour = styled.div`
-  overflow-x: hidden;
   font-size: 12px;
 `;

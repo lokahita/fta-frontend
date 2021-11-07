@@ -6,10 +6,11 @@ import { GetApp, ListAlt, MoreVert, ZoomIn } from "@material-ui/icons";
 
 import Metadata from './Metadata';
 
-export default function Data({ setBrowseData, setImportData, mapLayer, deleteDataset, handleVisible }) {
+export default function Data({ setBrowseData, setImportData, mapLayer, deleteDataset, handleVisible,  setZoomToMap }) {
 
   const [checked, setChecked] = useState([0]);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [id, setId] = useState(null);
   const [row, setRow] = useState(null);
   
   const [showMetadata, setShowMetadata] = useState(false);
@@ -29,7 +30,9 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
 
   const handleClick = (event, row) => {
     setAnchorEl(event.currentTarget);
+    setId(row.id)
     setRow(row)
+    console.log(row)
   };
 
 
@@ -37,8 +40,18 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
     setAnchorEl(null);
   };
 
+  const handleSetZoomMap = () => { 
+    setZoomToMap(id);
+    setAnchorEl(null);
+  }
+
+  const handleSetMetadata = () => { 
+    setShowMetadata(true)
+    setAnchorEl(null);
+  }
+
   const open = Boolean(anchorEl);
-  const id = open ? 'simple-popover' : undefined;
+  const idpop = open ? 'simple-popover' : undefined;
 
 
   function getListLayers() {
@@ -88,6 +101,8 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
     setShowMetadata(e);
   }
 
+  
+
   return (
     <Container>
       <Divider />
@@ -107,35 +122,9 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
             getListLayers()
           }
 
-          {
-            /*
-            [0, 1, 2, 3].map((value) => {
-            const labelId = `checkbox-list-label-${value}`;
-
-            return (
-              <ListItem key={value} role={undefined} dense button onClick={handleToggle(value)}>
-                <ListItemIcon>
-                  <Checkbox
-                    edge="start"
-                    checked={checked.indexOf(value) !== -1}
-                    tabIndex={-1}
-                    disableRipple
-                    inputProps={{ 'aria-labelledby': labelId }}
-                  />
-                </ListItemIcon>
-                <ListItemText id={labelId} primary={`Line item ${value + 1}`} />
-                <ListItemSecondaryAction>
-                  <IconButton edge="end" aria-label="comments">
-                    <DeleteIcon />
-                  </IconButton>
-                </ListItemSecondaryAction>
-              </ListItem>
-            );
-          })
-          */}
         </List>
         <Popover
-          id={id}
+          id={idpop}
           open={open}
           anchorEl={anchorEl}
           onClose={handleClose}
@@ -148,55 +137,99 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
             horizontal: 'center',
           }}
         >
+          
           {
             //<Typography>The content of the Popover. {identifier}</Typography>
-          }
+           id &&
           <List component="nav" aria-label="main mailbox folders">
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}}>
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}}  onClick={()=>handleSetZoomMap()}>
               <ListItemIcon style={{minWidth: '40px'}}>
                 <ZoomIn />
               </ListItemIcon>
               <ListItemText primary="Zoom To" />
             </ListItem>
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={()=>setShowMetadata(true)}>
+            { (!id.includes("uploader") && !id.includes("drawing"))  &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={()=>handleSetMetadata()}>
               <ListItemIcon style={{minWidth: '40px'}}>
                 <ListAlt />
               </ListItemIcon>
               <ListItemText primary="View Metadata" />
             </ListItem>
-           
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} >
+            }
+            { (!id.includes("uploader") && !id.includes("drawing"))  && row.kml &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.kml)}>
               <ListItemIcon style={{minWidth: '40px'}}>
                 <GetApp />
               </ListItemIcon>
               <ListItemText primary="KML" />
             </ListItem>
-
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}}>
+            }
+            { (!id.includes("uploader") && !id.includes("drawing"))  && row.gml &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.gml)}>
+              <ListItemIcon style={{minWidth: '40px'}}>
+                <GetApp />
+              </ListItemIcon>
+              <ListItemText primary="GML" />
+            </ListItem>
+            }
+            { (!id.includes("uploader") && !id.includes("drawing")) && row.shp &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.shp)}>
+              <ListItemIcon style={{minWidth: '40px'}}>
+                <GetApp />
+              </ListItemIcon>
+              <ListItemText primary="SHP" />
+            </ListItem>
+            }
+            {
+              /* 
+              (!id.includes("uploader") && !id.includes("drawing")) && row.original &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.original)}>
               <ListItemIcon style={{minWidth: '40px'}}>
                 <GetApp />
               </ListItemIcon>
               <ListItemText primary="Original" />
             </ListItem>
-
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}}>
+            */
+            }
+            { (!id.includes("uploader") && !id.includes("drawing")) && row.pdf &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.pdf)}>
               <ListItemIcon style={{minWidth: '40px'}}>
                 <GetApp />
               </ListItemIcon>
               <ListItemText primary="Pdf" />
             </ListItem>
-
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}}>
+            }
+            { (!id.includes("uploader") && !id.includes("drawing")) && row.geojson &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.geojson)}>
               <ListItemIcon style={{minWidth: '40px'}}>
                 <GetApp />
               </ListItemIcon>
-              <ListItemText primary="Shapefile" />
+              <ListItemText primary="Geojson" />
             </ListItem>
+            }
+            { (!id.includes("uploader") && !id.includes("drawing")) && row.csv &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.csv)}>
+              <ListItemIcon style={{minWidth: '40px'}}>
+                <GetApp />
+              </ListItemIcon>
+              <ListItemText primary="CSV" />
+            </ListItem>
+            }
+            { (!id.includes("uploader") && !id.includes("drawing")) && row.excel &&
+            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.excel)}>
+              <ListItemIcon style={{minWidth: '40px'}}>
+                <GetApp />
+              </ListItemIcon>
+              <ListItemText primary="Excel" />
+            </ListItem>
+            }
+           
           </List>
+          }
         </Popover>
 
       </DataContent>
-      <Metadata open={showMetadata} row={row} handleCloseMetadata={(e) =>handleCloseMetadata(e)}/>
+      <Metadata open={showMetadata} id={id} handleCloseMetadata={(e) =>handleCloseMetadata(e)}/>
     </Container>
   )
 }
@@ -219,7 +252,7 @@ const DataContent = styled.div`
   overflow-y: auto;
   overflow-x: hidden;
 `;
-const TitleDataContent = styled.h5`
+const TitleDataContent = styled.p`
   margin:0px;
   color:#888;
 `;

@@ -11,6 +11,7 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "@turf/turf": "^6.5.0",
+    "dom-to-image": "^2.6.0",
     "highcharts": "^9.2.2",
     "highcharts-react-official": "^3.0.0",
     "jszip": "^3.7.1",

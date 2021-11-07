@@ -35,7 +35,7 @@ export default function TopMenu() {
     return (
         <Container>
             <LeftTopMenu>
-                <Typography variant="span" className={classes.versionHeader}>
+                <Typography variant="caption" className={classes.versionHeader}>
                     Version 1.0
                 </Typography>
                 <Typography variant="h3" className={classes.titleHeader}>
@@ -56,7 +56,7 @@ export default function TopMenu() {
 const Container = styled.div`
   display: flex;
   padding: 5px 15px;
-  height: 6vh;
+  height: 7.7vh;
   background-color: white;
   border-bottom: 2px solid #3f7e32;
 `;

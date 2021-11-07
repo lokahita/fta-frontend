@@ -136,6 +136,7 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
                             wmsLayer.set('title', l.title)
                             //map.addLayer(wmsLayer)
                             group.getLayers().array_.push(wmsLayer)
+                            map.updateSize();
                         } else {
                             var esriSource = new ImageArcGISRest({
                                 //Config.proxy_domain + 
@@ -150,6 +151,7 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
                             esriLayer.set('title', l.title)
                             //map.addLayer(wmsLayer)
                             group.getLayers().array_.push(esriLayer)
+                            map.updateSize();
                         }
 
                     }else if(l.tipe === 'zip'){
@@ -170,7 +172,7 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
                         shapeLayer.set('title', l.title)
                         //map.addLayer(wmsLayer)
                         group.getLayers().array_.push(shapeLayer)
-
+                        map.updateSize();
                     }
                 }
             });

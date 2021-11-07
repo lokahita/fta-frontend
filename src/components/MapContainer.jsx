@@ -3,12 +3,13 @@ import { fromLonLat } from "ol/proj";
 import { Layers, BasemapLayer, VectorLayer, GraticuleLayer } from "./Map/Layers";
 import {
   Controls, FullScreenControl, GraticuleControl, ZoomControl, ZoomToExtentControl,
-  ScaleLineControl, OverviewMapControl, AttributionControl, MeasureControl, 
+  ScaleLineControl, OverviewMapControl, AttributionControl, MeasureControl,
   IdentifyControl, DrawingControl
 } from "./Map/Controls";
 import { Interactions, DrawBbox } from "./Map/Interactions";
 
 import Map from "./Map";
+import ZoomToMap from './Map/ZoomToMap';
 import { vector } from "./Map/Source"
 import { Button, ButtonGroup, IconButton } from "@material-ui/core";
 import { Close, ExpandLess, ExpandMore, LayersRounded, LocalPrintshop, Print as PrintIcon } from "@material-ui/icons";
@@ -18,25 +19,39 @@ import Basemap from './Map/Basemap';
 import Print from './Map/Print/Print';
 import BoundaryLayer from "./Map/Layers/BoundaryLayer";
 import BBoxLayer from "./Map/Layers/BBoxLayer";
+import MeasurementLayer from "./Map/Layers/MeasurementLayer";
 import GroupLayer from "./Map/Layers/GroupLayer";
-import StatisticLayer from "./Map/Layers/StatisticLayer";
-import AnalysisLayer from "./Map/Layers/AnalysisLayer";
+import MagicLayer from "./Map/Layers/MagicLayer";
+import IdentifyLayer from "./Map/Layers/IdentifyLayer";
 import { ImageWMS as ImageWMSSource } from 'ol/source/';
 import Config from '../config.json';
 
 export default function MapContainer({ center, zoom, basemap, setBasemap, bbox, visibleBbox,
   boundary, visibleBoundary, zoomBbox, setZoomBbox, drawing, setBbox, setDrawing, setVisibleBbox,
-  setLabelArea, visibleStatistic, mapLayer, identifierDelete, setIdentifierDelete, visibleAnalysis, buffered
+  setLabelArea, visibleStatistic, mapLayer, setMapLayer, identifierDelete, setIdentifierDelete, visibleAnalysis, buffered,
+  zoomToMap, setZoomToMap
 }) {
   const basemapRef = useRef();
   const [showBasemap, setShowBasemap] = useState(false);
+  const [showMeasurement, setShowMeasurement] = useState(false);
   const [showPrint, setShowPrint] = useState(false);
+  const [render, setRender] = useState(false);
   const [collapsed, setCollapsed] = useState(false);
+  //  const [drawingMeasurement, setDrawingMeasurement] = useState(false);
+  //  const [clearMeasurement, setClearMeasurement] = useState(false);
+  //  const [measurementType, setMeasurementType] = useState({ id: 1, name: "Length (LineString)" });
 
   function handleCloseBasemap(e) {
     setShowBasemap(false);
   }
+  function handleCloseMeasurement(e) {
+    setShowMeasurement(false);
+  }
 
+  function handlePrint() {
+    setShowPrint(true)
+    setRender(true)
+  }
   function handleClosePrint(e) {
     setShowPrint(false);
   }
@@ -52,8 +67,8 @@ export default function MapContainer({ center, zoom, basemap, setBasemap, bbox, 
         legendContent.style.display = 'block';
       }, 500)
     } else {
-      legendContainer.style.width = "95px";
-      legendContainer.style.height = "30px";
+      legendContainer.style.width = "115px";
+      legendContainer.style.height = "40px";
       setCollapsed(true);
       legendContent.style.display = 'none';
     }
@@ -125,18 +140,18 @@ export default function MapContainer({ center, zoom, basemap, setBasemap, bbox, 
                   </div>
                 </div>
                 )
-              }else if (row.geom === 'LineString') {
+              } else if (row.geom === 'LineString') {
                 return (<div key={index} style={{ fontSize: '12px' }}>
                   <b>{row.title}</b>
                   <br />
 
-                  <div style={{ marginTop: '9.5px', marginBottom: '9.5px', width: "20px", height: "1px",  border: '0.5px solid #49a5d2', borderColor: '#49a5d2', backgroundColor: '#49a5d2' }}>
+                  <div style={{ marginTop: '9.5px', marginBottom: '9.5px', width: "20px", height: "1px", border: '0.5px solid #49a5d2', borderColor: '#49a5d2', backgroundColor: '#49a5d2' }}>
 
                   </div>
                 </div>
                 )
               }
-               else {
+              else {
                 return (<div key={index} style={{ fontSize: '12px' }}>
                   <b>{row.title}</b>
                   <br />
@@ -190,49 +205,9 @@ export default function MapContainer({ center, zoom, basemap, setBasemap, bbox, 
             */
           })
         } else {
-          return <span>{visibleStatistic? '' : 'no legend'}</span>
+          return <p>{'no legend'}</p>
         }
-      } else {
-        return <span>{visibleStatistic ? '' : 'no legend'}</span>
       }
-    } else {
-      return <span>{visibleStatistic ? '' : 'no legend'}</span>
-    }
-  }
-
-  function load_legend_statistik() {
-    if (visibleStatistic) {
-
-      return (
-        <StatistikLegendContainer>
-          <p style={{ margin: '0px 0px 5px 0px' }}>Statistik Akses Minum Provinsi (%)</p>
-          <Wrapper><Box1></Box1><StatistikLabel>16 - 25</StatistikLabel></Wrapper>
-          <Wrapper><Box2></Box2><StatistikLabel>25 - 33</StatistikLabel></Wrapper>
-          <Wrapper><Box3></Box3><StatistikLabel>33 - 42</StatistikLabel></Wrapper>
-          <Wrapper><Box4></Box4><StatistikLabel>42 - 51</StatistikLabel></Wrapper>
-          <Wrapper><Box5></Box5><StatistikLabel>51 - 59</StatistikLabel></Wrapper>
-        </StatistikLegendContainer>
-      )
-    } else {
-      return null;
-    }
-  }
-
-  function load_legend_analysis() {
-    if (visibleAnalysis) {
-
-      return (
-        <div  style={{ fontSize: '12px' }}>
-        <b>Buffer Analysis</b>
-        <br />
-
-        <div style={{ width: "20px", height: "20px", border: '1px solid #ccc', borderColor: '#ff0000', backgroundColor: 'rgba(255, 255, 0, 0.3)' }}>
-
-        </div>
-      </div>
-      )
-    } else {
-      return null;
     }
   }
 
@@ -262,15 +237,13 @@ export default function MapContainer({ center, zoom, basemap, setBasemap, bbox, 
         <ButtonGroup disableElevation variant="contained" color="primary">
           <Button color="primary" startIcon={<LayersRounded />} size="small" onClick={() => setShowBasemap(true)}>Basemap</Button>
         </ButtonGroup>
-        {
-          /*
-        <ButtonGroup disableElevation variant="contained" color="primary" style={{marginLeft: '10px'}}>
-          <Button color="primary" startIcon={<LocalPrintshop />} size="small" onClick={() => setShowPrint(true)}>Print Map</Button>
+
+        <ButtonGroup disableElevation variant="contained" color="primary" style={{ marginLeft: '10px' }}>
+          <Button color="primary" startIcon={<LocalPrintshop />} size="small" onClick={() => handlePrint()}>Print Map</Button>
         </ButtonGroup>
-        */
-        }
+
       </ButtonContainer>
-      <LegendContainer id="legendContainer">
+      <LegendContainer id="legendContainer" className="legendContainer">
         <Closer>
           <Title>Legend</Title>
           <IconButton id="icon" size="small" onClick={() => closeMenu()}>
@@ -279,39 +252,32 @@ export default function MapContainer({ center, zoom, basemap, setBasemap, bbox, 
         </Closer>
         <LegendContent id="legendContent">
           {
-            load_legend_statistik()
-          }
-          {
-            load_legend_analysis()
-          }
-          {
             load_legend_wms()
           }
         </LegendContent>
       </LegendContainer>
 
       <Basemap basemap={basemap} setBasemap={setBasemap} open={showBasemap} handleCloseBasemap={(e) => handleCloseBasemap(e)} />
-      {
-        /*
-      <Print open={showPrint} handleClosePrint={(e) => handleClosePrint(e)} />
-      */ 
-      }
-
+      <Print render={render} setRender={(e) => setRender(e)} open={showPrint} handleClosePrint={(e) => handleClosePrint(e)} mapLayer={mapLayer} />
+      <ZoomToMap zoomToMap={zoomToMap} setZoomToMap={setZoomToMap} />
       <Layers>
         <BasemapLayer
           basemap={basemap}
           zIndex={0}
         />
-        <GraticuleLayer  zIndex={99} />
+        <GraticuleLayer zIndex={99} />
         <BoundaryLayer zIndex={98} visible={visibleBoundary} boundary={boundary} />
         <BBoxLayer zIndex={97} visible={visibleBbox} bbox={bbox} zoomBbox={zoomBbox} setZoomBbox={setZoomBbox} />
+        <MeasurementLayer zIndex={100} />
+        <MagicLayer zIndex={101} />
+        <IdentifyLayer zIndex={102} />
         <GroupLayer zIndex={11} mapLayer={mapLayer} identifierDelete={identifierDelete} setIdentifierDelete={setIdentifierDelete} />
-        <StatisticLayer zIndex={12} visible={visibleStatistic} />
-        <AnalysisLayer zIndex={13} visible={visibleAnalysis} buffered={buffered} />
 
         {
           /*
-  
+    <StatisticLayer zIndex={12} visible={visibleStatistic} />
+        <AnalysisLayer zIndex={13} visible={visibleAnalysis} buffered={buffered} />
+
            <GroupLayer zIndex={11} />
   
           {showLayerStats && (
@@ -349,19 +315,28 @@ export default function MapContainer({ center, zoom, basemap, setBasemap, bbox, 
         <ZoomToExtentControl />
         <FullScreenControl />
         <GraticuleControl />
-        {
-          /*
-        <MeasureControl />
-        <IdentifyControl />
-        <DrawingControl />
-          */
-        }
         <ScaleLineControl />
         <OverviewMapControl basemap={basemap} />
         <AttributionControl />
+        <MeasureControl
+        //measurementType={measurementType} 
+        //setMeasurementType={(e)=>setMeasurementType(e)}
+        //setDrawing={(e) => setDrawingMeasurement(e)} 
+        //setClearMeasurement={(e)=>setClearMeasurement(e)}
+        />
+        <IdentifyControl mapLayer={mapLayer} />
+        <DrawingControl setMapLayer={(e)=>setMapLayer(e)} />
       </Controls>
       <Interactions>
         <DrawBbox drawing={drawing} setBbox={setBbox} setDrawing={setDrawing} setVisibleBbox={setVisibleBbox} setLabelArea={setLabelArea} />
+        {
+          /*
+          <DrawMeasurement drawing={drawingMeasurement} setDrawing={setDrawingMeasurement} 
+          clearMeasurement={clearMeasurement} setClearMeasurement={(e)=>setClearMeasurement(e)}
+          measurementType={measurementType} 
+          />
+          */
+        }
       </Interactions>
 
     </Map>
@@ -393,7 +368,7 @@ const LegendContainer = styled.div`
 `;
 
 
-const Title = styled.h3`
+const Title = styled.h5`
   margin:0px;
   color:#2F4E6F;
 `;
@@ -406,10 +381,8 @@ const Closer = styled.div`
 
 const LegendContent = styled.div`
   margin-top:10px;
-  max-height: 210px;
+  max-height:200px;
   overflow-y: auto;
-  overflow-x: hidden;
-  max-width: 200px;
 `;
 
 const StatistikLegendContainer = styled.div`

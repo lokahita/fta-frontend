@@ -161,8 +161,8 @@ export default function ImportData({ open, handleCloseImportData, setMapLayer })
             //setBuffer(oldArray => [...oldArray, { id: 'uploader'+name, data: geojson }])
             //setMapLayer(oldArray => [...oldArray, { id: 'uploader' + name, title: props.buffer[0].data.fileName, server: 'local', tipe: 'zip', url: '', layer: '', original: '', pdf: '', geojson: '', kml: '', gml: '', shp: '', csv: '', excel: '', metadata: false, table: false, visible: true, opacity: 1 }]);
             //props.addBuffer(geojson)
-            setMapLayer(oldArray => [...oldArray, { id: 'uploader' + name, title: name, server: 'local', tipe: 'zip', url: 'local', geom: geojson.features[0].geometry.type,layer: geojson, metadata: false, table: true, visible: true, opacity: 1 }])
-
+            setMapLayer(oldArray => [...oldArray, { id: 'uploader' + name, title: name, server: 'local', tipe: 'zip', url: 'local', geom: geojson.features[0].geometry.type,layer: geojson, original: '', pdf: '', geojson: '', kml: '', gml: '', shp: '', csv: '', excel: '', metadata: false, table: true, visible: true, opacity: 1 }])
+           
             handleClose()
             setLoading(false)
             setSelectedFile()

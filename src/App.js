@@ -72,6 +72,8 @@ function App() {
   const [identifierAttribute, setIdentifierAttribute] = useState("");
   const [identifierDelete, setIdentifierDelete] = useState("");
   const [identifierVisible, setIdentifierVisible] = useState("");
+  
+  const [zoomToMap, setZoomToMap] = useState();
 
   const [buffered, setBuffered] = useState();
 
@@ -108,7 +110,7 @@ function App() {
       buttonContainer.style.marginLeft = "15px";
       if (e === 'analysis') {
         setOpen(true)
-      } 
+      }
     } else {
       var sidebar = document.getElementById('sidebar');
       sidebar.style.width = "330px";
@@ -176,7 +178,7 @@ function App() {
         visibleBbox={visibleBbox} setVisibleBbox={(e) => setVisibleBbox(e)} setZoomBbox={(e) => setZoomBbox(e)} />;
     } else if (menu === 'data') {
       return <Data setBrowseData={(e) => setBrowseData(e)} setImportData={(e) => setImportData(e)} mapLayer={mapLayer}
-        deleteDataset={(e) => deleteDataset(e)} handleVisible={e => handleVisible(e)} />;
+        deleteDataset={(e) => deleteDataset(e)} handleVisible={e => handleVisible(e)} setZoomToMap={(e) => setZoomToMap(e)} />;
     } else if (menu === 'about') {
       return <About />;
     }
@@ -314,6 +316,9 @@ function App() {
 
   return (
     <Container>
+      <div id="ipl-progress-indicator" class="ipl-progress-indicator">
+        <img alt="logo" src="loading.gif" width="120px" />
+      </div>
       <SelectArea open={selectArea} handleCloseSelectArea={(e) => handleCloseSelectArea(e)}
         labelArea={labelArea} setLabelArea={setLabelArea}
         setBbox={setBbox} setBoundary={setBoundary} setZoomBbox={setZoomBbox}
@@ -324,7 +329,7 @@ function App() {
         dataAll={dataAll} setMapLayer={(e) => setMapLayer(e)}
       />
       <ImportData open={importData} handleCloseImportData={(e) => handleCloseImportData(e)} setMapLayer={(e) => setMapLayer(e)} />
-      <Analysis open={open} handleCloseAnalysis={(e) => handleCloseAnalysis(e)} mapLayer={mapLayer} setBuffered={e => setBuffered(e)} visibleAnalysis={visibleAnalysis} setVisibleAnalysis={setVisibleAnalysis} />
+      <Analysis open={open} handleCloseAnalysis={(e) => handleCloseAnalysis(e)} />
       <TopMenu />
       <Main>
         <Content>
@@ -333,9 +338,10 @@ function App() {
             bbox={bbox} visibleBbox={visibleBbox} boundary={boundary} visibleBoundary={visibleBoundary}
             zoomBbox={zoomBbox} setZoomBbox={setZoomBbox} drawing={drawing}
             setBbox={setBbox} setDrawing={setDrawing} setVisibleBbox={setVisibleBbox}
-            setLabelArea={setLabelArea} visibleStatistic={visibleStatistic} mapLayer={mapLayer}
+            setLabelArea={setLabelArea} visibleStatistic={visibleStatistic} mapLayer={mapLayer} setMapLayer={(e) => setMapLayer(e)}
             identifierDelete={identifierDelete} setIdentifierDelete={setIdentifierDelete}
-            visibleAnalysis={visibleAnalysis} buffered={buffered}
+            visibleAnalysis={visibleAnalysis} buffered={buffered}  zoomToMap={zoomToMap} 
+            setZoomToMap={setZoomToMap}
           />
         </Content>
         <Sidebar id="sidebar">
@@ -343,7 +349,7 @@ function App() {
             <SidebarTitle>
               {sidebarTitle[menu]}
             </SidebarTitle>
-            <IconButton id="close" size="small" onClick={() => closeMenu()} style={{ marginTop:'-10px'}} >
+            <IconButton id="close" size="small" onClick={() => closeMenu()} style={{ marginTop: '-10px' }} >
               <Close fontSize="small" />
             </IconButton>
           </Closer>

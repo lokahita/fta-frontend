@@ -1,9 +1,8 @@
 import { Box, Button, ButtonGroup, Checkbox, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, FormControl, FormControlLabel, IconButton, ImageList, ImageListItem, InputLabel, ListSubheader, MenuItem, Paper, Select, Tab, Tabs, TextField, Typography } from "@material-ui/core";
 import styled from "styled-components";
-import { useState } from 'react';
+import { useState, useContext, useEffect, } from 'react';
 import Draggable from 'react-draggable';
 import { Close } from "@material-ui/icons";
-
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -17,6 +16,12 @@ import Config from '../../../config.json';
 import { OSM as OSMSource, Stamen as StamenSource, XYZ as XYZSource, ImageWMS as ImageWMSSource, Vector as VectorSource } from 'ol/source/';
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer';
 import NewPDFPages from './NewPDFPages';
+
+import MapContext from "../MapContext";
+
+import Feature from 'ol/Feature';
+import { Polygon } from 'ol/geom';
+import domtoimage from 'dom-to-image';
 
 
 function PaperComponent(props) {
@@ -38,8 +43,9 @@ const useStyles = makeStyles((theme) => ({
     },
 }));
 
-export default function Print({ open, handleClosePrint, mapLayer, resolution }) {
+export default function Print({ open, render, setRender, handleClosePrint, mapLayer, resolution }) {
     const classes = useStyles();
+    const { map } = useContext(MapContext);
     const [title, setTitle] = useState('map title');
     const [description, setDescription] = useState('map description');
     const [legend, setLegend] = useState(false);
@@ -56,16 +62,17 @@ export default function Print({ open, handleClosePrint, mapLayer, resolution }) 
 
     function handlingLegend() {
         setLegend(!legend)
-        /*
-        var leg = document.getElementById('preview-legend');
-        console.log(leg)
+        
+        var leg = document.getElementById('previewLegend');
+        //console.log(leg)
+        
         //console.log(leg.clientWidth)
         //console.log(leg.clientHeight)
-        const _a4PageSize = { height: 300, width: 250 }
+        const _a4PageSize = { height: 300, width: 300 }
 
         setTimeout(function () {
             domtoimage
-                .toPng(leg, _a4PageSize)
+                .toPng(leg)
                 .then(dataUrl => {
                     //console.log(dataUrl)
                     setCLegend(dataUrl);
@@ -73,8 +80,135 @@ export default function Print({ open, handleClosePrint, mapLayer, resolution }) 
                 }).catch(err => { console.log(err) });
 
         }, 800);
-        */
+        
     }
+
+    useEffect(() => {
+
+        if(render){
+            if (!map) return;
+
+        
+
+            var exportOptions = {
+                filter: function (element) {
+
+                    var className = element.className || '';
+                    //console.log(className)
+                    //console.log(typeof (className) === 'string')
+                    if (typeof (className) === 'string' && className.indexOf('drawContainer') && className.indexOf('identifyContainer') && className.indexOf('measurementContainer') && className.indexOf('legendContainer') === -1 && className.indexOf('MuiButtonBase-root') === -1) {
+                        return (
+                            className.indexOf('ol-control') === -1 ||
+                            className.indexOf('ol-scale') > -1 ||
+                            (className.indexOf('ol-attribution') > -1 &&
+                                className.indexOf('ol-uncollapsible'))
+                            
+                            /*
+                            className.indexOf('ol-control') === -1 ||
+                            className.indexOf('ol-scale') > -1 ||
+                            (className.indexOf('ol-attribution') > -1 &&
+                                className.indexOf('ol-uncollapsible'))
+                            */
+                        );
+                    }
+                },
+            };
+            var obj = map.getTargetElement()
+
+            exportOptions.width = obj.clientWidth;
+            exportOptions.height = obj.clientHeight;
+         
+            //peta.once('rendercomplete', function () {
+            var layers = map.getLayers().getArray();
+            //console.log(wms)
+            //console.log(layers)
+            //console.log(obj)
+           
+            var idbb = 0;
+            layers.forEach(function (l, i) {
+                // /console.log(l)
+                if (l.get("id") === 'magic_layer') {
+                    //console.log(i)
+                    idbb = i;
+                }
+            })
+    
+            var _source = layers[idbb].getSource()
+            _source.clear();
+            //console.log(_source)
+            
+            var bbox = map.getView().calculateExtent(map.getSize());
+            console.log(bbox)
+           
+            var feature = new Feature({
+                geometry: new Polygon([
+                    [
+                        [
+                            bbox[0],
+                            bbox[1]
+                        ],
+                        [
+                            bbox[2],
+                            bbox[1]
+                        ],
+                        [
+                            bbox[2],
+                            bbox[3]
+                        ],
+                        [
+                            bbox[0],
+                            bbox[3]
+                        ],
+                        [
+                            bbox[0],
+                            bbox[1]
+                        ]
+                    ]
+                ]),
+                name: 'BboxMagic'
+            });
+            //vectorSource.addFeature();
+            _source.addFeature(feature)
+            
+            domtoimage.toPng(obj, exportOptions)
+                .then(function (dataURL) {
+                    //var link = document.getElementById('image-download');
+                    //link.href = dataURL;
+                    //link.click();
+                    setCapture(dataURL)
+                    setHeight(obj.clientHeight);
+                    document.body.style.cursor = 'auto';
+            });
+
+            /*
+            var leg = document.getElementById('previewLegend');
+            
+            console.log(leg)
+            //console.log(leg.clientWidth)
+            //console.log(leg.clientHeight)
+            
+            const _a4PageSize = { height: leg.clientHeight, width: 250 }
+            setTimeout(function () {
+                domtoimage
+                    .toPng(leg, _a4PageSize)
+                    .then(dataUrl => {
+                        console.log(dataUrl)
+                        //setCLegend(dataUrl);
+    
+                    }).catch(err => { console.log(err) });
+    
+            }, 800);
+            */
+            setRender(false);
+        }
+        return () => {
+            if (map) {
+                //map.removeLayer(graticuleLayer);
+                
+            }
+        };
+
+    }, [render]);
 
     function load_wms_legend() {
         if (typeof (mapLayer) !== 'undefined') {
@@ -87,30 +221,32 @@ export default function Print({ open, handleClosePrint, mapLayer, resolution }) 
                         //console.log(row)
                         //console.log(row.layer)
 
-                        var wmsSource = new ImageWMSSource({
-                            url: Config.proxy_domain + row.url,
-                            params: { 'LAYERS': row.layer },
-                            ratio: 1,
-                            serverType: row.server,
-                            crossOrigin: 'Anonymous'
-                        });
+                        
 
-                        //var resolution = peta.getView().getResolution();
-                        //console.log(resolution)
-                        var graphicUrl = wmsSource.getLegendUrl(resolution);
-                        //console.log(graphicUrl)
+                        if (row.tipe === 'wms'  && row.visible) {
+                            var wmsSource = new ImageWMSSource({
+                                url: Config.proxy_domain + row.url,
+                                params: { 'LAYERS': row.layer },
+                                ratio: 1,
+                                serverType: row.server,
+                                crossOrigin: 'Anonymous'
+                            });
+    
+                            //var resolution = peta.getView().getResolution();
+                            //console.log(resolution)
+                            var graphicUrl = wmsSource.getLegendUrl(resolution);
+                            //console.log(graphicUrl)
 
-
-                        if (row.layer) {
+                            
                             //<img src={main + "?" + request} alt="alt" />
                             return <Row className="mr-0" key={index}>
                                 <Col xs={10} className="ml-2 mt-1 font-11"><b>{row.title}</b>
                                     <br />
-                                    <img crossOrigin="Anonymous" referrerPolicy="origin" src={graphicUrl} alt={row.title} onLoad={() => { console.log(this) }} />
+                                    <img crossOrigin="Anonymous" referrerPolicy="origin" src={graphicUrl} alt={row.title} />
                                 </Col>
                             </Row>
                         } else {
-                            if (row.tipe === 'zip') {
+                            if (row.tipe === 'zip' && row.visible) {
                                 return <Row className="mr-0" key={index}>
                                     <Col xs={10} className="ml-2 mt-1 font-11"><b>{row.title}</b> <br />
                                         <div className="border bg-light border-primary" style={{ width: "20px", height: "20px" }}>
@@ -154,12 +290,12 @@ export default function Print({ open, handleClosePrint, mapLayer, resolution }) 
 
             </DialogTitle>
             <DialogContent style={{ minHeight: "75vh", padding: '10px' }} >
-                <Row className="px-3">
+                <Row>
                     <Col className="pt-1 px-1" id="attribute-content">
                         <TextField
                             id="outlined-multiline-static"
                             label="Map Title"
-                            defaultValue={title}
+                            value={title}
                             variant="outlined"
                             onChange={(e) => setTitle(e.target.value)}
                             fullWidth
@@ -169,18 +305,18 @@ export default function Print({ open, handleClosePrint, mapLayer, resolution }) 
                 </Row>
                 <Row>
                     <Col8 className="pt-1 px-1">
-                        <img id="preview" width="100%" style={{ border: "solid 1px #000", maxHeight: "250px" }} src={capture} alt="preview" />
+                        <img id="preview" width="100%" style={{ border: "solid 1px #000" }} src={capture} alt="preview" />
                     </Col8>
                     <Col4 className="pt-1 px-1">
                         <p className="font-11 mb-1">Legend</p>
-                        <div id="preview-legend" style={{ maxWidth: "200px", overflowX: "hidden", maxHeight: "220px", overflowY: "hidden" }} >
+                        <div id="previewLegend" style={{ maxWidth: "200px", overflowX: "hidden", maxHeight: "250px", overflowY: "hidden" }} >
                             {
                                 legend ? load_wms_legend() : ""
                             }
                         </div>
                     </Col4>
                 </Row>
-                <Row className="px-3">
+                <Row>
                     <Col2 className="pt-1 px-1" id="attribute-content">
 
                         <FormControlLabel
@@ -256,6 +392,7 @@ export default function Print({ open, handleClosePrint, mapLayer, resolution }) 
                             multiline
                             rows={5}
                             defaultValue={description}
+                            onChange={(e) => setDescription(e.target.value)}
                             variant="outlined"
                             fullWidth
                         />
@@ -266,9 +403,18 @@ export default function Print({ open, handleClosePrint, mapLayer, resolution }) 
                             color="primary"
                             aria-label="vertical outlined primary button group"
                         >
-                            <Button>Recapture Map</Button>
-                            <Button>Download PDF</Button>
-                            <Button>Cancel</Button>
+                            {
+                            //<Button  onClick={handleClose}>Recapture Map</Button>
+                            // <Button  onClick={handleClose}>Download PDF</Button>
+                            }
+                            <PDFDownloadLink component="button" document={<NewPDFPages mapLayer={mapLayer} height={height} legend={legend} size={size} orientation={orientation} data={capture} dataClegend={clegend} title={title} description={description} />} 
+                            fileName="IcrafMap.pdf" className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButtonGroup-grouped MuiButtonGroup-groupedVertical MuiButtonGroup-groupedOutlined MuiButtonGroup-groupedOutlinedVertical MuiButtonGroup-groupedOutlinedPrimary MuiButton-outlinedPrimary" >
+                            {({ blob, url, loading, error }) =>
+                                loading ? 'updating document..' : 'Download pdf'
+                            }
+                        </PDFDownloadLink>
+                           
+                            <Button onClick={handleClose}>Cancel</Button>
                         </ButtonGroup>
 
                     </Col2>
@@ -300,8 +446,9 @@ const Col3 = styled.div`
 `;
 
 const Col4 = styled.div`
-margin:5px;
-flex-grow:4
+    margin:5px;
+    min-width:22%;
+    flex-grow:4;
 `;
 
 const Col6 = styled.div`
@@ -313,7 +460,7 @@ const Col6 = styled.div`
 
 const Col8 = styled.div`
   margin:5px;
-  flex-grow:8
+  flex-grow:8;
 `;
 
 

@@ -37,14 +37,11 @@ export default function LeftMenu({ menu, setMenu, total }) {
             {menu === 'data' ? <DescriptionIcon fontSize="large" /> : <><DescriptionOutlinedIcon fontSize="medium" /><MenuTitle>Data</MenuTitle></>}
 
           </Menu>
-           {
-             /*
+          
           <Menu active={menu === 'analysis' ? true : false} onClick={() => setMenu('analysis')}>
             {menu === 'analysis' ? <AnalysisIcon fontSize="large" /> : <><AnalysisOutlinedIcon fontSize="medium" /><MenuTitle>Thematic<br/>Analysis</MenuTitle></>}
 
           </Menu>
-            */
-           }
         </MenuTop>
         <MenuBottom>
           <Menu active={menu === 'about' ? true : false} onClick={() => setMenu('about')}>

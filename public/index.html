@@ -6,14 +6,21 @@
   <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="theme-color" content="#000000" />
-  <meta name="description" content="Inageoportal SDI Integration Project" />
+  <meta name="description" content="FTA Geoportal" />
   <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
   <title>FTA Geoportal</title>
+  
+  <!-- FontAwesome -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">   
+  <link rel='stylesheet' id='bootstrap-4-css'  href='https://www.foreststreesagroforestry.org/wp-content/themes/FTA/assets/css/bootstrap.css?ver=v4.0.0' type='text/css' media='all' />
+  
+  <link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+	<script type='text/javascript' src='https://www.foreststreesagroforestry.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.0' id='jquery-core-js'></script>
   <style>
-   @import url('https://fonts.googleapis.com/css?family=Hind:300,400,500,600,700');
+    @import url('https://fonts.googleapis.com/css?family=Hind:300,400,500,600,700');
     *{
       font-family: 'Hind', sans-serif;
       margin:0;
@@ -23,42 +30,13 @@
       margin: 0;
       background-color: #f3f3f3;
     }
-    .ipl-progress-indicator {
-      display: flex;
-      justify-content: center;
-      justify-content: center;
-      align-items: center;
-      background-color:rgba(255, 255, 255, 0.6);
-      width: 100%;
-      height: 100%;
-      position: fixed;
-      opacity: 1;
-      pointer-events: none;
-      -webkit-transition: opacity cubic-bezier(.4, 0, .2, 1) 436ms;
-      -moz-transition: opacity cubic-bezier(.4, 0, .2, 1) 436ms;
-      transition: opacity cubic-bezier(.4, 0, .2, 1) 436ms;
-      z-index: 9999
-    }
-
-    .loader {
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .available {
-      opacity: 0
-    }
   </style>
-   <!-- FontAwesome -->
-   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
+
 
 <body>
   <noscript>You need to enable JavaScript to run this app.</noscript>
-  <div id="ipl-progress-indicator" class="ipl-progress-indicator">
-    <img alt="logo" src="loading.gif" width="120px" />
-  </div>
   <div id="root"></div>
 </body>
-
+<script type='text/javascript' src='https://www.foreststreesagroforestry.org/wp-content/themes/FTA/assets/js/bootstrap.js?ver=v4.0.0' id='bootstrap-4-js-js'></script>
 </html>

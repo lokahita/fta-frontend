@@ -513,7 +513,7 @@ export default function SelectArea({ open, handleCloseSelectArea,
                     </Tabs>
                 </Paper>
                 <TabPanel value={value} index={0}  >
-                    <h3 style={{ margin: '0px 0px 15px 0px', textAlign: 'center' }}>{localLabelArea}</h3>
+                    <h5 style={{ margin: '0px 0px 15px 0px', textAlign: 'center' }}>{localLabelArea}</h5>
                     <FormControl fullWidth style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', minHeight: "35vh" }}>
                         <TextField
                             id="outlined-select-currency"

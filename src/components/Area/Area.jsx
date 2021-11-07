@@ -115,7 +115,7 @@ const TitleAreaContent = styled.h5`
   margin:0px;
   color:#888;
 `;
-const InfoAreaContent = styled.h4`
+const InfoAreaContent = styled.p`
   margin:0px;
   padding-right: 10px;
   word-break: break-word;
@@ -138,12 +138,12 @@ const Wrapper = styled.div`
   align-items: center;
   margin: 0px 5px;
 `;
-const Label = styled.h5`
+const Label = styled.p`
   margin:0px;
   padding: 3px 5px;
   text-align: right;
-  width: 40px;
+  width: 60px;
 `;
-const Value = styled.h5`
+const Value = styled.p`
   margin:0px;
 `;

@@ -153,11 +153,13 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
 
     function addAndGo() {
         handleCloseBrowseData(false);
-        setMapLayer(oldArray => [...oldArray, { id: identifier, title: layerName, server: server, tipe: 'wms', url: urlWMS, geom:'', layer: layerWMS, metadata: true, table: layerGeojson ? true : false, visible: true, opacity: 1 }])
+        setMapLayer(oldArray => [...oldArray, { id: identifier, title: layerName, server: server, tipe: 'wms', url: urlWMS, geom: '', layer: layerWMS, original: layerOriginal, pdf: layerPdf, geojson: layerGeojson, kml: layerKML, gml: layerGML, shp: layerSHP, csv: layerCSV, excel: layerExcel, metadata: true, table: layerGeojson ? true : false, visible: true, opacity: 1 }])
+        //setMapLayer(oldArray => [...oldArray, { id: 'drawing-' + random, title: value + "-" + random, server: 'local', tipe: 'geojson', url: '', layer: '', original: '', pdf: '', geojson: '', kml: '', gml: '', shp: '', csv: '', excel: '', metadata: false, table: false, visible: true, opacity: 1 }]);
+
     }
 
     function addAndKeep() {
-        setMapLayer(oldArray => [...oldArray, { id: identifier, title: layerName, server: server, tipe: 'wms', url: urlWMS, geom:'', layer: layerWMS, metadata: true, table: layerGeojson ? true : false, visible: true, opacity: 1 }])
+        setMapLayer(oldArray => [...oldArray, { id: identifier, title: layerName, server: server, tipe: 'wms', url: urlWMS, geom: '', layer: layerWMS, original: layerOriginal, pdf: layerPdf, geojson: layerGeojson, kml: layerKML, gml: layerGML, shp: layerSHP, csv: layerCSV, excel: layerExcel, metadata: true, table: layerGeojson ? true : false, visible: true, opacity: 1 }])
     }
 
     const handleChangeTheme = (event) => {
@@ -211,7 +213,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
         setIdKeywords(0);
         setIdFlagship(0)
         setQuery("")
-        if (event.target.value === "0" ) {
+        if (event.target.value === "0") {
             load_theme(idTheme)
         } else {
             load_organizations(event.target.value)
@@ -224,7 +226,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
         //var result = data.filter(p => {
         //console.log(data);
         var themes;
-        if (idTheme === 0 ) {
+        if (idTheme === 0) {
             themes = dataAll;
         } else {
             //alert(idTheme)
@@ -233,7 +235,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
             themes = dataAll.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
         }
 
-       
+
         var result
         if (id === 0 || id === "All") {
             result = themes;
@@ -256,21 +258,68 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
     const handleChangeYear = (event) => {
         setIdYear(event.target.value);
         setIdKeywords(0);
+        setIdFlagship(0)
         setQuery("")
         if (event.target.value === "All") {
-        
+
             load_organizations(idOrganization)
         } else {
             load_years(event.target.value)
         }
-
     };
+
+    
+    function load_years(val) {
+        //console.log(data);
+
+        //var result = data.filter(p => {
+        //console.log(data);
+        var themes;
+        if (idTheme === 0) {
+            themes = dataAll;
+        } else {
+            //alert(idTheme)
+            var raw = listThemes.filter(x => x.id === idTheme)
+            var key = raw[0].name
+            themes = dataAll.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+        }
+
+        var organizations;
+
+
+        if (idOrganization === 0) {
+            organizations = themes;
+        } else {
+            organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
+        }
+
+        //var result = themes.filter(p => p.organizations.id === parseInt(id));
+        var result;
+        //console.log(organizations[0]);
+        if (val === "All") {
+            result = organizations;
+        } else {
+            //console.log(val)
+            result = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === val);
+        }
+
+        setData(result);//.slice(0, 10));
+        setNumberData(result.length);
+
+        if (result.length > 0) {
+            setDataAktif(null, result.slice(0, 1)[0])
+        } else {
+            emptyDataset();
+        }
+    }
+
 
 
     const handleChangeKeywords = (event) => {
         setIdKeywords(event.target.value);
+        setIdFlagship(0);
         setQuery("")
-        if (event.target.value === "All") {
+        if (event.target.value === 0) {
             //console.log(data)
             //setData(dataAll);//.slice(0, 10));
             //setNumberData(dataAll.length);
@@ -283,19 +332,285 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
             load_keywords(raw[0].name)
         }
     };
-    function validateForm() {
-        return true;// !loading && selectedFile && selectedFile.length > 0 && shapeFile && name;
+
+    
+    function load_keywords(val) {
+
+        var themes;
+        if (idTheme === 0) {
+            themes = dataAll;
+        } else {
+            //alert(idTheme)
+            var raw = listThemes.filter(x => x.id === idTheme)
+            var key = raw[0].name
+            themes = dataAll.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+        }
+
+
+        var organizations;
+
+        if (idOrganization === 0) {
+            organizations = themes;
+        } else {
+            organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
+        }
+
+        var years;
+
+        if (idYear === "All") {
+            years = organizations;
+        } else {
+            //onsole.log(val)
+            years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
+        }
+
+
+        //var result = themes.filter(p => p.organizations.id === parseInt(id));
+        var result;
+        // console.log(organizations[0]);
+        if (val === "All") {
+            result = years;
+        } else {
+            //console.log(val)
+            result = years.filter(p => p.keywords.toLowerCase().includes(val.toLowerCase()));
+        }
+
+        setData(result);//.slice(0, 10));
+        setNumberData(result.length);
+
+        if (result.length > 0) {
+            setDataAktif(null, result.slice(0, 1)[0])
+        } else {
+            emptyDataset();
+        }
     }
 
-    function createData(id, title, modified) {
-        return { id, title, modified };
+    const handleChangeFlagship = (event) => {
+        setIdFlagship(event.target.value);
+        console.log(event.target.value)
+        setQuery("")
+        if (event.target.value === 0) {
+            //console.log(data)
+            //setData(dataAll);//.slice(0, 10));
+            //setNumberData(dataAll.length);
+            //setDataAktif(null, dataAll.slice(0, 1)[0])
+            //var themes = dataAll.filter(p => p.keywords.toLowerCase().includes(idTheme.toLowerCase()));
+            //var organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
+            //console.log(event.target.value + " " + idKeywords)
+            var raw = listKeywords.filter(x => x.id === idKeywords)
+            var key = raw[0].name
+            load_keywords(key)
+        } else {
+            var raw = listFlagship.filter(x => x.id === event.target.value)
+            load_flagship(raw[0].name)
+        }
+    };
+
+
+    
+    function load_flagship(val) {
+        //console.log(val)
+        var themes;
+        if (idTheme === 0) {
+            themes = dataAll;
+        } else {
+            //alert(idTheme)
+            var raw = listThemes.filter(x => x.id === idTheme)
+            var key = raw[0].name
+            themes = dataAll.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+        }
+
+
+        var organizations;
+
+        if (idOrganization === 0) {
+            organizations = themes;
+        } else {
+            organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
+        }
+
+        var years;
+
+        if (idYear === "All") {
+            years = organizations;
+        } else {
+            //onsole.log(val)
+            years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
+        }
+
+        var keywords;
+        // console.log(organizations[0]);
+        if (idKeywords === 0) {
+            keywords = years;
+        } else {
+            //console.log(val)
+            var raw = listKeywords.filter(x => x.id === idKeywords)
+            var key = raw[0].name
+            keywords = years.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+        }
+
+        //var result = themes.filter(p => p.organizations.id === parseInt(id));
+        var result;
+        // console.log(organizations[0]);
+        //console.log(val);
+        var q = "flagship";
+        if (val === 'Yes') {
+            result = keywords.filter(p => p.keywords.toLowerCase().includes(q.toLowerCase()));
+        } else {
+            result = keywords.filter(p => !p.keywords.toLowerCase().includes(q.toLowerCase()));
+            
+        }
+
+        setData(result);//.slice(0, 10));
+        setNumberData(result.length);
+
+        if (result.length > 0) {
+            setDataAktif(null, result.slice(0, 1)[0])
+        } else {
+            emptyDataset();
+        }
     }
 
-    function createAttr(id, name, type) {
-        return { id, name, type };
+    
+    function handleSearch(key) {
+        // console.log(key);
+        if (key.length < 3) {
+            //var raw = listFlagship.filter(x => x.id === idFlagship)
+            //load_flagship(raw[0].name)
+           
+                var themes;
+                if (idTheme === 0) {
+                    themes = dataAll;
+                } else {
+                    //alert(idTheme)
+                    var raw = listThemes.filter(x => x.id === idTheme)
+                    var key = raw[0].name
+                    themes = dataAll.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+                }
+        
+        
+                var organizations;
+        
+                if (idOrganization === 0) {
+                    organizations = themes;
+                } else {
+                    organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
+                }
+        
+                var years;
+        
+                if (idYear === "All") {
+                    years = organizations;
+                } else {
+                    //onsole.log(val)
+                    years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
+                }
+        
+                var keywords;
+                // console.log(organizations[0]);
+                if (idKeywords === 0) {
+                    keywords = years;
+                } else {
+                    //console.log(val)
+                    var raw = listKeywords.filter(x => x.id === idKeywords)
+                    var key = raw[0].name
+                    keywords = years.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+                }
+        
+                //var result = themes.filter(p => p.organizations.id === parseInt(id));
+                var result;
+                // console.log(organizations[0]);
+                //console.log(val);
+                var q = "flagship";
+                if (idFlagship === 0) {
+                    result = keywords
+                }else if (idFlagship === 1) {
+                    result = keywords.filter(p => p.keywords.toLowerCase().includes(q.toLowerCase()));
+                } else {
+                    result = keywords.filter(p => !p.keywords.toLowerCase().includes(q.toLowerCase()));
+                }
+
+                setData(result);//.slice(0, 10));
+                setNumberData(result.length);
+    
+                if (result.length > 0) {
+                    setDataAktif(null, result.slice(0, 1)[0])
+                } else {
+                    emptyDataset();
+                }
+    
+                setQuery(key);
+          
+        }else{
+            
+            var themes;
+            if (idTheme === 0) {
+                themes = dataAll;
+            } else {
+                //alert(idTheme)
+                var raw = listThemes.filter(x => x.id === idTheme)
+                var key = raw[0].name
+                themes = dataAll.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+            }
+    
+    
+            var organizations;
+    
+            if (idOrganization === 0) {
+                organizations = themes;
+            } else {
+                organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
+            }
+    
+            var years;
+    
+            if (idYear === "All") {
+                years = organizations;
+            } else {
+                //onsole.log(val)
+                years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
+            }
+    
+            var keywords;
+            // console.log(organizations[0]);
+            if (idKeywords === 0) {
+                keywords = years;
+            } else {
+                //console.log(val)
+                var raw = listKeywords.filter(x => x.id === idKeywords)
+                var key = raw[0].name
+                keywords = years.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+            }
+    
+            //var result = themes.filter(p => p.organizations.id === parseInt(id));
+            var result;
+            // console.log(organizations[0]);
+            //console.log(val);
+            var q = "flagship";
+            if (idFlagship === 0) {
+                result = keywords
+            }else if (idFlagship === 1) {
+                result = keywords.filter(p => p.keywords.toLowerCase().includes(q.toLowerCase()));
+            } else {
+                result = keywords.filter(p => !p.keywords.toLowerCase().includes(q.toLowerCase()));
+            }
+
+            var resultQ = result.filter(p => p.title.toLowerCase().includes(key.toLowerCase()));
+
+            setData(resultQ);//.slice(0, 10));
+            setNumberData(resultQ.length);
+
+            if (resultQ.length > 0) {
+                setDataAktif(null, resultQ.slice(0, 1)[0])
+            } else {
+                emptyDataset();
+            }
+
+            setQuery(key);
+        }
+
     }
 
-  
 
     const BootstrapInput = withStyles((theme) => ({
         root: {
@@ -425,9 +740,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
             if (listThemes !== null) {
                 if (listThemes.length > 0) {
                     return listThemes.map((row, index) => {
-                        //console.log(row.id, index)
-
-                        return (<MenuItem key={index} value={row.id}>
+                      return (<MenuItem key={index} value={row.id}>
                             {row.name}
                         </MenuItem>)
                     })
@@ -503,7 +816,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
         }
     }
 
-    
+
     function getFlagship() {
         if (typeof (listFlagship) !== 'undefined') {
             //var items=props.presensiDataLast.data;
@@ -533,26 +846,17 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                 if (data.length > 0) {
 
                     return data.map((row, index) => {
-                        //console.log(row)
-                        /*
-                         if (index === 0)
-                             return <Row key={index} className="mx-0 border-bottom bg-kuning font-11" onClick={(e) => setDataAktif(e, row)}><Col xs={8} className="px-1 breaking ">{row.title}</Col><Col xs={4} className="px-2">{row.publication_date}</Col></Row>
-                         else
-                             return <Row key={index} className="mx-0 border-bottom font-11" onClick={(e) => setDataAktif(e, row)}><Col xs={8} className="px-1 breaking">{row.title}</Col><Col xs={4} className="px-2">{row.publication_date}</Col></Row>
-                         */
-                        ///cr = cr + 1
-                        //return <tr><td className="p-2">{cr}</td><td className="p-2">{row.name}</td><td className="p-2">{row.sj}</td><td className="p-2">{row.kategori}</td><td className="p-2">{row.katalog}</td><td className="p-2 pointer"> <FileEarmarkText size={14} onClick={() => showMetadata(row)} className="mr-2" /> {' '} {row.viewable === 'true' ? <Eye onClick={() => showView(row)} className="mr-2" size={14} /> : ""} {' '} {row.downloadable === 'true' ? <Download size={12}  onClick={() => showDownload(row)} /> : ""}  </td></tr>
-                        if (index === 0) {
+                       if (index === 0) {
                             return (
-                                <TableRow key={row.id} className="bgKuning"  onClick={(e) => setDataAktif(e, row)}>
-                                    <TableCell style={{fontSize:'11px'}}>{row.title}</TableCell>
-                                    <TableCell style={{fontSize:'11px'}}>{row.publication_date}</TableCell>
+                                <TableRow key={row.id} className="bgKuning" onClick={(e) => setDataAktif(e, row)}>
+                                    <TableCell style={{ fontSize: '11px' }}>{row.title}</TableCell>
+                                    <TableCell style={{ fontSize: '11px' }}>{row.publication_date}</TableCell>
                                 </TableRow>
                             )
                         } else {
-                            return (<TableRow key={row.id} className="data"  onClick={(e) => setDataAktif(e, row)}>
-                                <TableCell style={{fontSize:'11px'}}>{row.title}</TableCell>
-                                <TableCell style={{fontSize:'11px'}}>{row.publication_date.replace("T", " ")}</TableCell>
+                            return (<TableRow key={row.id} className="data" onClick={(e) => setDataAktif(e, row)}>
+                                <TableCell style={{ fontSize: '11px' }}>{row.title}</TableCell>
+                                <TableCell style={{ fontSize: '11px' }}>{row.publication_date.replace("T", " ")}</TableCell>
                             </TableRow>
                             )
                         }
@@ -570,7 +874,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
     }
 
     function emptyDataset() {
-        /*
+
         setIdentifier("");
         setTitle("");
         setAbstract("");
@@ -579,184 +883,136 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
         setUrlThumb(no_thumb);
         setSubjects("");
         setOrganization("");
-        */
+        setMetadata({
+
+        })
+
     }
 
-    function load_years(val) {
-        //console.log(data);
 
-        //var result = data.filter(p => {
-        //console.log(data);
-        var organizations;
+    function doSearch() {
+        key=query
+        if (key.length < 3) {
+            //var raw = listFlagship.filter(x => x.id === idFlagship)
+            //load_flagship(raw[0].name)
+           
+                var themes;
+                if (idTheme === 0) {
+                    themes = dataAll;
+                } else {
+                    //alert(idTheme)
+                    var raw = listThemes.filter(x => x.id === idTheme)
+                    var key = raw[0].name
+                    themes = dataAll.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+                }
+        
+        
+                var organizations;
+        
+                if (idOrganization === 0) {
+                    organizations = themes;
+                } else {
+                    organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
+                }
+        
+                var years;
+        
+                if (idYear === "All") {
+                    years = organizations;
+                } else {
+                    //onsole.log(val)
+                    years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
+                }
+        
+                var keywords;
+                // console.log(organizations[0]);
+                if (idKeywords === 0) {
+                    keywords = years;
+                } else {
+                    //console.log(val)
+                    var raw = listKeywords.filter(x => x.id === idKeywords)
+                    var key = raw[0].name
+                    keywords = years.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+                }
+        
+                //var result = themes.filter(p => p.organizations.id === parseInt(id));
+                var result;
+                // console.log(organizations[0]);
+                //console.log(val);
+                var q = "flagship";
+                if (idFlagship === 0) {
+                    result = keywords
+                }else if (idFlagship === 1) {
+                    result = keywords.filter(p => p.keywords.toLowerCase().includes(q.toLowerCase()));
+                } else {
+                    result = keywords.filter(p => !p.keywords.toLowerCase().includes(q.toLowerCase()));
+                }
 
-
-        if (idOrganization === 0) {
-            organizations = dataAll;
-        } else {
-            organizations = dataAll.filter(p => p.organizations.id === parseInt(idOrganization));
-        }
-
-        //var result = themes.filter(p => p.organizations.id === parseInt(id));
-        var result;
-        //console.log(organizations[0]);
-        if (val === "All") {
-            result = organizations;
-        } else {
-            console.log(val)
-            result = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === val);
-        }
-
-        setData(result);//.slice(0, 10));
-        setNumberData(result.length);
-
-        if (result.length > 0) {
-            setDataAktif(null, result.slice(0, 1)[0])
-        } else {
-            emptyDataset();
-        }
-    }
-
-    function load_keywords(val) {
-        var organizations;
-        var years;
-
-
-        if (idOrganization === 0) {
-            organizations = dataAll;
-        } else {
-            organizations = dataAll.filter(p => p.organizations.id === parseInt(idOrganization));
-        }
-
-        if (idYear === "All") {
-            years = organizations;
-        } else {
-            //onsole.log(val)
-            years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
-        }
-
-
-        //var result = themes.filter(p => p.organizations.id === parseInt(id));
-        var result;
-        // console.log(organizations[0]);
-        if (val === "All") {
-            result = years;
-        } else {
-            //console.log(val)
-            result = years.filter(p => p.keywords.toLowerCase().includes(val.toLowerCase()));
-        }
-
-        setData(result);//.slice(0, 10));
-        setNumberData(result.length);
-       
-        if (result.length > 0) {
-            setDataAktif(null, result.slice(0, 1)[0])
-        } else {
-            emptyDataset();
-        }
-    }
-
-    function handleSearch(event) {
-        setQuery(event.target.value)
-        /*
-        if (key.length < 2) {
-            //console.log(data)
-            //setData(dataAll);//.slice(0, 10));
-            //setNumberData(dataAll.length);
-            //setDataAktif(null, dataAll.slice(0, 1)[0])
-            //var themes = dataAll.filter(p => p.keywords.toLowerCase().includes(idTheme.toLowerCase()));
-            //var organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
-            //
-            //var raw = listKeywords.filter(x => x.id ===idKeywords)
-            //console.log(raw[0].name)
-            //load_keywords(raw[0].name)
-            //if (idKeywords === 0){
-//
- //           }
-   //         else{
-     //           var raw = listKeywords.filter(x => x.id ===idKeywords)
-       //         load_keywords(raw[0].name)
-        //    }
+                setData(result);//.slice(0, 10));
+                setNumberData(result.length);
+    
+                if (result.length > 0) {
+                    setDataAktif(null, result.slice(0, 1)[0])
+                } else {
+                    emptyDataset();
+                }
+    
+                setQuery(key);
+          
+        }else{
             
-            //load_keywords(raw[0].name)
-        } else {
-            //alert(key)
-
-        }*/
-
-    }
-    function handleSearch2(key) {
-        // console.log(key);
-
-        /*
-        if (key.length < 2) {
-            //alert('cari')
-            //setData(dataAll);
-            //setNumberData(dataAll.length);
-            alert('key: ' + key)
-            var organizations;
-            var years;
-            var keywords;
-
-
-            if (idOrganization === 0) {
-                organizations = dataAll;
+            var themes;
+            if (idTheme === 0) {
+                themes = dataAll;
             } else {
-                organizations = dataAll.filter(p => p.organizations.id === parseInt(idOrganization));
+                //alert(idTheme)
+                var raw = listThemes.filter(x => x.id === idTheme)
+                var key = raw[0].name
+                themes = dataAll.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
             }
-
+    
+    
+            var organizations;
+    
+            if (idOrganization === 0) {
+                organizations = themes;
+            } else {
+                organizations = themes.filter(p => p.organizations.id === parseInt(idOrganization));
+            }
+    
+            var years;
+    
             if (idYear === "All") {
                 years = organizations;
             } else {
                 //onsole.log(val)
                 years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
             }
-
-            // console.log(organizations[0]);
-
-
-
-            if (idKeywords === "All") {
-                keywords = years;
-            } else {
-                var raw = listKeywords.filter(x => x.id === idKeywords)
-                keywords = years.filter(p => p.keywords.toLowerCase().includes(raw[0].name.toLowerCase()));
-            }
-
-            var result = keywords;
-
-            setData(result);//.slice(0, 10));
-            setNumberData(result.length);
-        } else {
-        */
-        if (key.length > 2) {
-            var organizations;
-            var years;
+    
             var keywords;
-
-
-            if (idOrganization === 0) {
-                organizations = dataAll;
-            } else {
-                organizations = dataAll.filter(p => p.organizations.id === parseInt(idOrganization));
-            }
-
-            if (idYear === "All") {
-                years = organizations;
-            } else {
-                //onsole.log(val)
-                years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
-            }
-
             // console.log(organizations[0]);
-            if (idKeywords === "All") {
+            if (idKeywords === 0) {
                 keywords = years;
             } else {
+                //console.log(val)
                 var raw = listKeywords.filter(x => x.id === idKeywords)
-                keywords = years.filter(p => p.keywords.toLowerCase().includes(raw[0].name.toLowerCase()));
+                var key = raw[0].name
+                keywords = years.filter(p => p.keywords.toLowerCase().includes(key.toLowerCase()));
+            }
+    
+            //var result = themes.filter(p => p.organizations.id === parseInt(id));
+            var result;
+            // console.log(organizations[0]);
+            //console.log(val);
+            var q = "flagship";
+            if (idFlagship === 0) {
+                result = keywords
+            }else if (idFlagship === 1) {
+                result = keywords.filter(p => p.keywords.toLowerCase().includes(q.toLowerCase()));
+            } else {
+                result = keywords.filter(p => !p.keywords.toLowerCase().includes(q.toLowerCase()));
             }
 
-
-            var result = keywords;
             var resultQ = result.filter(p => p.title.toLowerCase().includes(key.toLowerCase()));
 
             setData(resultQ);//.slice(0, 10));
@@ -768,55 +1024,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                 emptyDataset();
             }
 
-
-        }
-        setQuery(key);
-    }
-
-    function doSearch() {
-        // console.log(key);
-        var q = document.getElementById('q');
-
-        var key = q.value;
-
-
-        var organizations;
-        var years;
-        var keywords;
-
-
-        if (idOrganization === 0) {
-            organizations = dataAll;
-        } else {
-            organizations = dataAll.filter(p => p.organizations.id === parseInt(idOrganization));
-        }
-
-
-        if (idYear === "All") {
-            years = organizations;
-        } else {
-            //onsole.log(val)
-            years = organizations.filter(p => parseInt(p.publication_date.substring(0, 4)) === idYear);
-        }
-        // console.log(organizations[0]);
-        if (idKeywords === 0) {
-            keywords = years;
-        } else {
-            var raw = listKeywords.filter(x => x.id === idKeywords)
-            keywords = years.filter(p => p.keywords.toLowerCase().includes(raw[0].name.toLowerCase()));
-        }
-
-        console.log(keywords);
-        var result = keywords;
-        var resultQ = result.filter(p => p.title.toLowerCase().includes(key.toLowerCase()));
-
-        setData(resultQ);//.slice(0, 10));
-        setNumberData(resultQ.length);
-
-        if (resultQ.length > 0) {
-            setDataAktif(null, resultQ.slice(0, 1)[0])
-        } else {
-            emptyDataset();
+            setQuery(key);
         }
 
     }
@@ -842,179 +1050,42 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
             var json_obj = JSON.parse(row.distributions);
 
             var download_scheme = json_obj.filter(p => p.protocol === 'WWW:DOWNLOAD-1.0-http--download')
-            var thumbs = download_scheme.filter(x => x.url.toLowerCase().includes('thumbs'));            
+            var thumbs = download_scheme.filter(x => x.url.toLowerCase().includes('thumbs'));
             var original = download_scheme.filter(x => x.url.toLowerCase().includes('download'))
             var reflects = download_scheme.filter(x => x.url.toLowerCase().includes('reflect'));
             //console.log(download_scheme)
             //console.log(thumbs)
-            console.log(reflects)
+            //console.log(reflects)
 
-            if(thumbs.length > 0) {
+            if (thumbs.length > 0) {
                 setUrlThumb(thumbs[0].url);
                 //console.log(thumbs[0].url)
-            }else{
+            } else {
                 setUrlThumb(no_thumb);
             }
             var main;
             var layer;
-            if(reflects.length>0){
+            if (reflects.length > 0) {
                 //console.log(reflects[0].url)
                 var part = reflects[0].url.split("?")
-                main = part[0].replace("wms/reflect","")
-                layer = part[1].split("&")[0].replace("layers=","")
+                main = part[0].replace("wms/reflect", "")
+                layer = part[1].split("&")[0].replace("layers=", "")
                 //wfs_url = reflects[0].url
                 //console.log(main)
                 //console.log(layer)
-                load_info_attribute(main+"wfs?", layer);
-            }else{
+                load_info_attribute(main + "wfs?", layer);
+            } else {
                 setDataAttribute()
             }
-            var getmap = download_scheme.filter(x => x.url.toLowerCase().includes('getmap'));
-            var getfeature = download_scheme.filter(x => x.url.toLowerCase().includes('getfeature'));
-
-            var jpeg = getmap.filter(x => x.url.toLowerCase().includes('jpeg'))
-            var png = getmap.filter(x => x.url.toLowerCase().includes('png'))
-
-            var raw = original.filter(x => !x.url.toLowerCase().includes('kml'))
-            console.log(raw)
-            console.log(original)
-            if (raw.length > 0) {
-                //original dataset
-                var url_domain = raw[0].url.replace("91.225.61.58", "landscapeportal.org");
-                url_domain = url_domain.replace("91.225.62.74", "landscapeportal.org");
-                setLayerOriginal(url_domain);
-            } else {
-                setLayerOriginal("")
-            }
-
-            if (getmap.length > 0) {
-                //jpeg
-
-                if (jpeg.length > 0) {
-                    var url_domain = jpeg[0].url.replace("91.225.61.58", "landscapeportal.org");
-                    url_domain = url_domain.replace("91.225.62.74", "landscapeportal.org");
-                    var main = url_domain.split("?")[0]
-                    console.log(main)
-                    var layer = url_domain.split("?")[1].split("&");
-                    console.log(layer)
-                    var id = layer.filter(x => x.toLowerCase().includes('layers='))[0].replace("layers=", "")
-                    console.log(id)
-                    setUrlWMS(main);
-                    setLayerWMS(unescape(id));
-                } else if (png.length > 0) {
-                    var url_domain = png[0].url.replace("91.225.61.58", "landscapeportal.org");
-                    url_domain = url_domain.replace("91.225.62.74", "landscapeportal.org");
-                    var main = url_domain.split("?")[0]
-                    console.log(main)
-                    var layer = url_domain.split("?")[1].split("&");
-                    console.log(layer)
-                    var id = layer.filter(x => x.toLowerCase().includes('layers='))[0].replace("layers=", "")
-                    console.log(id)
-                    setUrlWMS(main);
-                    setLayerWMS(unescape(id));
-                } else {
-                    setUrlWMS("");
-                    setLayerWMS("");
-                }
-                var pdf = getmap.filter(x => x.url.toLowerCase().includes('pdf'))
-                if (pdf.length > 0) {
-                    var url_domain = pdf[0].url.replace("91.225.61.58", "landscapeportal.org");
-                    url_domain = url_domain.replace("91.225.62.74", "landscapeportal.org");
-                    setLayerPdf(url_domain);
-                } else {
-                    setLayerPdf("")
-                }
-                //console.log(png)
-            } else {
-                setUrlWMS("");
-                setLayerWMS("");
-                setLayerPdf("")
-            }
-
-
-
-            ///console.log(jpeg)
-            //console.log(png)
-            
-            //load_info_attribute(wfs[0].url, wfs[0].name);
-            //var thumb = wms[0].url.replace("?", "/reflect?layers=") + wms[0].name;
-            //setServer('geoserver')
-            //setUrlWMS(wms[0].url.replace("?", ""))
-
-            
-            
-            //OGC:WMS
-            //OGC:WFS
-            //WWW:LINK
-
-            //console.log(json_obj);
-            /*
-            //var esri = json_obj.filter(p => p.protocol === "ESRI:ArcGIS:MapServer")
-            var wms = json_obj.filter(p => p.protocol === 'OGC:WMS')
-            var wfs = json_obj.filter(p => p.protocol === 'OGC:WFS')
-            var link = json_obj.filter(p => p.protocol === 'WWW:LINK')
-
-            var thumb;
-            //console.log(typeof (esri));
-            //console.log(typeof (wms));
-            if (esri.length > 0) {
-                //console.log('aye');
-                //console.log(esri[0]);
-                thumb = esri[0].url + "/info/thumbnail";
-                setServer('esri')
-                setUrlWMS(esri[0].url)
-                setLayerWMS("")
-            }else{
-                thumb = wms[0].url.replace("?", "/reflect?layers=") + wms[0].name;
-                setServer('geoserver')
-                setUrlWMS(wms[0].url.replace("?", ""))
-                setLayerWMS(wms[0].name)
-            }
-                 
-            setUrlThumb(thumb);
-
-            if (esri.length > 0) {
-                load_info_attribute_esri(esri[0].url);
-            }else{ 
-                load_info_attribute(wfs[0].url, wfs[0].name);
-            }
-            */
-            //var download_scheme = json_obj.filter(p => p.protocol === 'WWW:DOWNLOAD-1.0-http--download')
-            //console.log(row.references.filter(p => p.scheme === 'WWW:LINK-1.0-http--link'));
-            //console.log(row.references.filter(p => p.scheme === 'WWW:DOWNLOAD-1.0-http--download').filter(x => x.url.includes('wms?') && !x.url.includes('legend') && x.url.includes('png')));
-            //WWW:DOWNLOAD-1.0-http--download
-
-            //setUrlThumb(references[0].url);
-            //var thumbs = download_scheme.filter(x => x.url.toLowerCase().includes('thumbs'));
-            //setUrlThumb(Config.proxy_domain + url_domain)
-            /*
             var original = download_scheme.filter(x => x.url.toLowerCase().includes('download'))
             var getmap = download_scheme.filter(x => x.url.toLowerCase().includes('getmap'));
-            var jpeg = getmap.filter(x => x.url.toLowerCase().includes('jpeg'))
-            var png = getmap.filter(x => x.url.toLowerCase().includes('png'))
-
             var getfeature = download_scheme.filter(x => x.url.toLowerCase().includes('getfeature'));
 
+            var jpeg = getmap.filter(x => x.url.toLowerCase().includes('jpeg'))
+            var png = getmap.filter(x => x.url.toLowerCase().includes('png'))
             var kml = download_scheme.filter(x => x.url.toLowerCase().includes('kml'));
-
-            if (thumbs.length > 0) {
-                setUrlThumb(Config.proxy_domain + thumbs[0].url);
-            } else {
-
-                if (png.length > 0) {
-                    var url_domain = png[0].url.replace("91.225.61.58", "landscapeportal.org");
-                    url_domain = url_domain.replace("91.225.62.74", "landscapeportal.org");
-                    setUrlThumb(Config.proxy_domain + url_domain);
-                } else if (jpeg.length) {
-                    setUrlThumb(Config.proxy_domain + jpeg[0].url);
-                } else {
-                    setUrlThumb(no_thumb);
-                }
-            }
-
             var raw = original.filter(x => !x.url.toLowerCase().includes('kml'))
-            console.log(raw)
-            console.log(original)
+
             if (raw.length > 0) {
                 //original dataset
                 var url_domain = raw[0].url.replace("91.225.61.58", "landscapeportal.org");
@@ -1026,7 +1097,6 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
 
             if (getmap.length > 0) {
                 //jpeg
-
                 if (jpeg.length > 0) {
                     var url_domain = jpeg[0].url.replace("91.225.61.58", "landscapeportal.org");
                     url_domain = url_domain.replace("91.225.62.74", "landscapeportal.org");
@@ -1035,7 +1105,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                     var layer = url_domain.split("?")[1].split("&");
                     console.log(layer)
                     var id = layer.filter(x => x.toLowerCase().includes('layers='))[0].replace("layers=", "")
-                    // console.log(id)
+                    console.log(id)
                     setUrlWMS(main);
                     setLayerWMS(unescape(id));
                 } else if (png.length > 0) {
@@ -1053,8 +1123,6 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                     setUrlWMS("");
                     setLayerWMS("");
                 }
-
-
                 var pdf = getmap.filter(x => x.url.toLowerCase().includes('pdf'))
                 if (pdf.length > 0) {
                     var url_domain = pdf[0].url.replace("91.225.61.58", "landscapeportal.org");
@@ -1069,8 +1137,6 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                 setLayerWMS("");
                 setLayerPdf("")
             }
-
-            setDataAttribute()
 
             if (getfeature.length > 0) {
                 var shape = getfeature.filter(x => x.url.toLowerCase().includes('shape-zip'))
@@ -1112,7 +1178,6 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                     var url_domain = geojson[0].url.replace("91.225.61.58", "landscapeportal.org");
                     url_domain = url_domain.replace("91.225.62.74", "landscapeportal.org");
                     setLayerGeojson(url_domain)
-                    load_info_attribute(url_domain)
                 } else {
                     setLayerGeojson("")
                 }
@@ -1125,11 +1190,12 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
             }
 
             if (kml.length > 0) {
-                setLayerKML(kml[0].url);
+                var url_domain = kml[0].url.replace("91.225.61.58", "landscapeportal.org");
+                url_domain = url_domain.replace("91.225.62.74", "landscapeportal.org");
+                setLayerKML(url_domain);
             } else {
-                setLayerKML("");
+                setLayerKML("")
             }
-            */
 
         }
     }
@@ -1157,20 +1223,6 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
         }
     }
 
-    function load_info_attribute_esri(url) {
-        //console.log(url)
-        //setDataAttribute()
-        const requestOptions = {
-            method: 'GET'
-        };
-        var url_replace = url + "/0?f=pjson";
-        fetch(url_replace, requestOptions).then(res => res.json()).then(data => {
-            //console.log(data.fields)
-            setDataAttribute(data.fields);
-        });
-
-       
-    }
 
     function load_info_attribute(url, name) {
         console.log(url)
@@ -1192,7 +1244,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
             } else {
                 setDataAttribute()
             }
-        }).catch(function(error) {
+        }).catch(function (error) {
             console.log(error);
             setDataAttribute()
         });
@@ -1231,15 +1283,15 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
             } else {
                 return (
                     <TableRow >
-                    <TableCell colSpan={4}>No attribute found</TableCell>
-                </TableRow>
+                        <TableCell colSpan={4}>No attribute found</TableCell>
+                    </TableRow>
                 )
             }
         } else {
             return (
                 <TableRow>
-                <TableCell colSpan={4}>No attribute found</TableCell>
-            </TableRow>
+                    <TableCell colSpan={4}>No attribute found</TableCell>
+                </TableRow>
             )
         }
     }
@@ -1264,10 +1316,10 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
 
 
             </DialogTitle>
-            <DialogContent style={{ height: "80vh", padding: "5px" }} >
+            <DialogContent style={{ padding: "5px" }} >
                 <Wrapper>
                     <LeftContent>
-                        <Filter style={{fontSize: "12px"}}>
+                        <Filter style={{ fontSize: "12px" }}>
                             <Title>Filtering</Title>
                             <FormContainer style={{ display: 'flex', flexDirection: 'column', justifyContent: 'space-around', minHeight: "35vh" }}>
                                 <FormInput>
@@ -1363,8 +1415,8 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                                         <TextField
                                             id="outlined-select-currency"
                                             select
-                                            value={idKeywords}
-                                            onChange={handleChangeKeywords}
+                                            value={idFlagship}
+                                            onChange={handleChangeFlagship}
                                             variant="outlined"
                                             size="small"
                                             fullWidth
@@ -1373,29 +1425,38 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                                                 getFlagship()
                                             }
 
-                                            
+
                                         </TextField>
                                     </Entry>
                                 </FormInput>
-                                {
 
-                                    /*
-                                    <FormInput>
-                                        <Label>Title Search (Any text)</Label>
-                                        <Entry> 
-                                                <BootstrapInput placeholder="type title" id="q" fullWidth autoComplete="off"  />
-                                        </Entry>
-                                    </FormInput>
-                                    <FormInputRight>
-                                        <Button variant="contained" color="primary" size="small"  onClick={doSearch}>Search</Button>
-                                    </FormInputRight>
-                                        */
-                                }
+                                <FormInput>
+                                    <Label>Title Search (Any text)</Label>
+                                    <EntryMiddle>
+                                        <FormControl fullWidth style={{ marginBottom: "10px" }}>
+                                            <TextField
+                                                id="outlined-select-currency"
+                                                value={query} onChange={e => handleSearch(e.target.value)}
+                                                size="small"
+                                                variant="outlined"
+                                                autoComplete="off"
+                                                InputLabelProps={{ shrink: true }}
+                                            />
+                                        </FormControl>
+
+
+                                    </EntryMiddle>
+                                    <Button variant="contained" color="primary" size="small" style={{height: '40px',marginTop: '5px'}} onClick={doSearch}>Search</Button>
+
+                                </FormInput>
+
+
+
                             </FormContainer>
                         </Filter>
-                        <AvailableDataset  style={{fontSize: "12px"}}>
+                        <AvailableDataset style={{ fontSize: "12px" }}>
                             <Title>Available Dataset ({numberData})</Title>
-                            <TableContainer style={{ maxHeight: 250 }} className="pointer">
+                            <TableContainer style={{ maxHeight: 170 }} className="pointer">
                                 <Table stickyHeader size="small" aria-label="a dense table">
                                     <TableHead color="#ddd">
                                         <TableRow>
@@ -1408,16 +1469,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                                             getRowsData()
                                         }
 
-                                        {
-                                            /*
-                                            rows.map((row) => (
-                                            <TableRow key={row.id}>
-                                                <TableCell>{row.title}</TableCell>
-                                                <TableCell>{row.modified}</TableCell>
-                                            </TableRow>
-                                        ))
-                                        */
-                                        }
+
                                     </TableBody>
                                 </Table>
                             </TableContainer>
@@ -1425,12 +1477,12 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                     </LeftContent>
                     <RightContent>
                         <Metadata>
-                            <Description style={{fontSize: '11px'}}>
+                            <Description style={{ fontSize: '11px' }}>
                                 <Title>Metadata</Title>
-                                <p style={{ margin: '0px 0px 5px 0px' }}>Title: {metadata.title}</p>
-                                <p style={{ margin: '0px 0px 5px 0px' }}>Type: {metadata.type}</p>
-                                <p style={{ margin: '0px 0px 5px 0px' }}>Organization: {metadata.organization} </p>
-                                <p style={{ margin: '0px 0px 5px 0px' }}>Keywords:<br />
+                                <p style={{ margin: '0px 0px 5px 0px', fontSize: 'small' }}><b>Title</b>: {metadata.title}</p>
+                                <p style={{ margin: '0px 0px 5px 0px', fontSize: 'small' }}><b>Type</b>: {metadata.type}</p>
+                                <p style={{ margin: '0px 0px 5px 0px', fontSize: 'small' }}><b>Organization</b>: {metadata.organization} </p>
+                                <p style={{ maxHeight: '92px', overflowY: 'auto', margin: '0px 0px 5px 0px', fontSize: 'small' }}><b>Keywords</b>:<br />
                                     {
                                         viewSubject(metadata.subjects)
                                         //console.log(metadata)
@@ -1446,7 +1498,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                                     }
                                     */
                                 }
-                                <p style={{ maxHeight: '80px', overflowY: 'auto', margin: '0px 0px 5px 0px' }}>Abstract:<br />
+                                <p style={{ maxHeight: '105px', overflowY: 'auto', margin: '0px 0px 5px 0px', fontSize: 'small' }}><b>Abstract</b>:<br />
                                     {metadata.abstract}
                                 </p>
                             </Description>
@@ -1455,9 +1507,9 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                                 <img src={Config.proxy_domain + urlThumb} alt="preview" width="150" height="80" style={{ border: '1px solid #ccc' }} onError={e => { e.target.src = no_thumb }} />
                             </Thumbnail>
                         </Metadata>
-                        <Attribute  style={{fontSize: "12px"}}>
-                            <Title>Data Attribute {dataAttribute?"("+dataAttribute.length+")": ""}</Title>
-                            <TableContainer style={{ maxHeight: 240, }} >
+                        <Attribute style={{ fontSize: "12px" }}>
+                            <Title>Data Attribute {dataAttribute ? "(" + dataAttribute.length + ")" : ""}</Title>
+                            <TableContainer style={{ maxHeight: 170, }} >
                                 <Table stickyHeader size="small" aria-label="a dense table">
                                     <TableHead color="#ddd">
                                         <TableRow>
@@ -1471,17 +1523,7 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                                         {
                                             getRowsAttribute()
                                         }
-                                        {
-                                            /*
-                                            attr.map((att) => (
-                                            <TableRow key={att.id}>
-                                                <TableCell> </TableCell>
-                                                <TableCell>{att.name}</TableCell>
-                                                <TableCell>{att.type}</TableCell>
-                                            </TableRow>
-                                            ))
-                                            */
-                                        }
+
                                     </TableBody>
                                 </Table>
                             </TableContainer>
@@ -1494,10 +1536,10 @@ export default function BrowseData({ open, handleCloseBrowseData, setSelectArea,
                     <span>Save Layer Name As</span>
                 </SpanContainer>
                 <Entry>
-                  {
-                    //<BootstrapInput placeholder="layer name" value={layerName} onChange={e => setLayerName(e.target.value)} fullWidth />
-                  }
-                  <TextField id="outlined-basic2" variant="outlined" defaultValue={layerName} onChange={e => setLayerName(e.target.value)} size="small" fullWidth  />
+                    {
+                        //<BootstrapInput placeholder="layer name" value={layerName} onChange={e => setLayerName(e.target.value)} fullWidth />
+                    }
+                    <TextField id="outlined-basic2" variant="outlined" value={layerName} onChange={e => setLayerName(e.target.value)} size="small" fullWidth />
                 </Entry>
                 <Button
                     variant="contained"
@@ -1548,13 +1590,14 @@ const RightContent = styled.div`
 `;
 
 const Filter = styled.div`
-    max-height: 50%;
+    min-height: 65%;
     padding-right: 10px;
 `;
 
 const FormInput = styled.div`
   margin:0px;
   display: flex;
+  padding-top: 5px;
 `;
 
 const FormInputRight = styled.div`
@@ -1579,6 +1622,7 @@ const SpanContainer = styled.div`
 const EntryMiddle = styled.div`
     flex-grow: 1;
     padding-right: 10px;
+    padding-top:5px;
 `;
 const AvailableDataset = styled.div`
     flex-grow: 1;
@@ -1587,8 +1631,7 @@ const AvailableDataset = styled.div`
 
 const Metadata = styled.div`
     display: flex;
-    height: 50%;
-    max-height: 50%;
+    min-height: 65%;
 `;
 
 const Description = styled.div`
@@ -1605,7 +1648,7 @@ const Attribute = styled.div`
     flex-grow: 1;
 `;
 
-const Title = styled.h3`
+const Title = styled.h5`
   margin:0px;
   color:#2F4E6F;
 `;
