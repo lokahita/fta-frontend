@@ -1,4 +1,8 @@
-import { Button, Checkbox, Divider, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, Popover, Typography } from "@material-ui/core";
+import {
+  Button, Checkbox, Divider, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText, Popover,
+  Typography
+} from "@material-ui/core";
+import Slider from '@material-ui/core/Slider';
 import styled from "styled-components";
 import { useState } from 'react';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -6,13 +10,13 @@ import { GetApp, ListAlt, MoreVert, ZoomIn } from "@material-ui/icons";
 
 import Metadata from './Metadata';
 
-export default function Data({ setBrowseData, setImportData, mapLayer, deleteDataset, handleVisible,  setZoomToMap }) {
+export default function Data({ setBrowseData, setImportData, mapLayer, deleteDataset, handleVisible, setZoomToMap, handleOpacity}) {
 
   const [checked, setChecked] = useState([0]);
   const [anchorEl, setAnchorEl] = useState(null);
   const [id, setId] = useState(null);
   const [row, setRow] = useState(null);
-  
+
   const [showMetadata, setShowMetadata] = useState(false);
 
   const handleToggle = (value) => () => {
@@ -40,12 +44,12 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
     setAnchorEl(null);
   };
 
-  const handleSetZoomMap = () => { 
+  const handleSetZoomMap = () => {
     setZoomToMap(id);
     setAnchorEl(null);
   }
 
-  const handleSetMetadata = () => { 
+  const handleSetMetadata = () => {
     setShowMetadata(true)
     setAnchorEl(null);
   }
@@ -66,30 +70,37 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
 
           const labelId = `checkbox-list-label-${index}`;
           return (
-            <ListItem key={index} role={undefined} dense button style={{ padding: '0px' }}>
-              <ListItemIcon style={{ minWidth: '16px' }}>
-                <Checkbox
-                  edge="start"
-                  checked={row.visible}
-                  tabIndex={-1}
-                  disableRipple
-                  inputProps={{ 'aria-labelledby': labelId }}
-                  onClick={() => handleVisible(row.id)}
-                />
-              </ListItemIcon>
-              <ListItemText id={labelId} primary={`${row.title}`} style={{ fontSize: '10px', maxWidth: '185px' }} />
-              <ListItemSecondaryAction style={{ right: '0px' }}>
-                <IconButton edge="end" aria-label="comments" onClick={() => deleteDataset(row.id)} >
-                  <DeleteIcon />
-                </IconButton>
-                <IconButton edge="end" aria-label="comments" onClick={(e) => handleClick(e, row)} >
-                  <MoreVert />
-                </IconButton>
-              </ListItemSecondaryAction>
-
-            </ListItem>
+            <>
+              <ListItem key={index} role={undefined} dense button style={{ padding: '0px' }}>
+                <ListItemIcon style={{ minWidth: '16px' }}>
+                  <Checkbox
+                    edge="start"
+                    checked={row.visible}
+                    tabIndex={-1}
+                    disableRipple
+                    inputProps={{ 'aria-labelledby': labelId }}
+                    onClick={() => handleVisible(row.id)}
+                  />
+                </ListItemIcon>
+                <ListItemText id={labelId} primary={`${row.title}`} style={{ fontSize: '10px', maxWidth: '185px' }} />
+                <ListItemSecondaryAction style={{ right: '0px' }}>
+                  <IconButton edge="end" aria-label="comments" onClick={() => deleteDataset(row.id)} >
+                    <DeleteIcon />
+                  </IconButton>
+                  <IconButton edge="end" aria-label="comments" onClick={(e) => handleClick(e, row)} >
+                    <MoreVert />
+                  </IconButton>
+                </ListItemSecondaryAction>
+                <br />
+              </ListItem>
+              <Slider
+                value={row.opacity} min={0} max={1} step={0.01}
+                onChange={(e, v)=>handleOpacity(row.id, v)}
+              />
+            </>
           )
         })
+        //value={row.opacity} onChange={(e) => props.handleOpacity(row.id, e.target.value)}
       } else {
         return <TitleDataContent>No Layer Added. Browse or Import first.</TitleDataContent>
       }
@@ -101,7 +112,7 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
     setShowMetadata(e);
   }
 
-  
+
 
   return (
     <Container>
@@ -137,99 +148,99 @@ export default function Data({ setBrowseData, setImportData, mapLayer, deleteDat
             horizontal: 'center',
           }}
         >
-          
+
           {
             //<Typography>The content of the Popover. {identifier}</Typography>
-           id &&
-          <List component="nav" aria-label="main mailbox folders">
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}}  onClick={()=>handleSetZoomMap()}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <ZoomIn />
-              </ListItemIcon>
-              <ListItemText primary="Zoom To" />
-            </ListItem>
-            { (!id.includes("uploader") && !id.includes("drawing"))  &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={()=>handleSetMetadata()}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <ListAlt />
-              </ListItemIcon>
-              <ListItemText primary="View Metadata" />
-            </ListItem>
-            }
-            { (!id.includes("uploader") && !id.includes("drawing"))  && row.kml &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.kml)}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <GetApp />
-              </ListItemIcon>
-              <ListItemText primary="KML" />
-            </ListItem>
-            }
-            { (!id.includes("uploader") && !id.includes("drawing"))  && row.gml &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.gml)}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <GetApp />
-              </ListItemIcon>
-              <ListItemText primary="GML" />
-            </ListItem>
-            }
-            { (!id.includes("uploader") && !id.includes("drawing")) && row.shp &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.shp)}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <GetApp />
-              </ListItemIcon>
-              <ListItemText primary="SHP" />
-            </ListItem>
-            }
-            {
-              /* 
-              (!id.includes("uploader") && !id.includes("drawing")) && row.original &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.original)}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <GetApp />
-              </ListItemIcon>
-              <ListItemText primary="Original" />
-            </ListItem>
-            */
-            }
-            { (!id.includes("uploader") && !id.includes("drawing")) && row.pdf &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.pdf)}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <GetApp />
-              </ListItemIcon>
-              <ListItemText primary="Pdf" />
-            </ListItem>
-            }
-            { (!id.includes("uploader") && !id.includes("drawing")) && row.geojson &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.geojson)}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <GetApp />
-              </ListItemIcon>
-              <ListItemText primary="Geojson" />
-            </ListItem>
-            }
-            { (!id.includes("uploader") && !id.includes("drawing")) && row.csv &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.csv)}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <GetApp />
-              </ListItemIcon>
-              <ListItemText primary="CSV" />
-            </ListItem>
-            }
-            { (!id.includes("uploader") && !id.includes("drawing")) && row.excel &&
-            <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.excel)}>
-              <ListItemIcon style={{minWidth: '40px'}}>
-                <GetApp />
-              </ListItemIcon>
-              <ListItemText primary="Excel" />
-            </ListItem>
-            }
-           
-          </List>
+            id &&
+            <List component="nav" aria-label="main mailbox folders">
+              <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => handleSetZoomMap()}>
+                <ListItemIcon style={{ minWidth: '40px' }}>
+                  <ZoomIn />
+                </ListItemIcon>
+                <ListItemText primary="Zoom To" />
+              </ListItem>
+              {(!id.includes("uploader") && !id.includes("drawing")) &&
+                <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => handleSetMetadata()}>
+                  <ListItemIcon style={{ minWidth: '40px' }}>
+                    <ListAlt />
+                  </ListItemIcon>
+                  <ListItemText primary="View Metadata" />
+                </ListItem>
+              }
+              {(!id.includes("uploader") && !id.includes("drawing")) && row.kml &&
+                <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => window.open(row.kml)}>
+                  <ListItemIcon style={{ minWidth: '40px' }}>
+                    <GetApp />
+                  </ListItemIcon>
+                  <ListItemText primary="KML" />
+                </ListItem>
+              }
+              {(!id.includes("uploader") && !id.includes("drawing")) && row.gml &&
+                <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => window.open(row.gml)}>
+                  <ListItemIcon style={{ minWidth: '40px' }}>
+                    <GetApp />
+                  </ListItemIcon>
+                  <ListItemText primary="GML" />
+                </ListItem>
+              }
+              {(!id.includes("uploader") && !id.includes("drawing")) && row.shp &&
+                <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => window.open(row.shp)}>
+                  <ListItemIcon style={{ minWidth: '40px' }}>
+                    <GetApp />
+                  </ListItemIcon>
+                  <ListItemText primary="SHP" />
+                </ListItem>
+              }
+              {
+                /* 
+                (!id.includes("uploader") && !id.includes("drawing")) && row.original &&
+              <ListItem button style={{paddingTop:"0px", paddingBottom:"0px"}} onClick={() => window.open(row.original)}>
+                <ListItemIcon style={{minWidth: '40px'}}>
+                  <GetApp />
+                </ListItemIcon>
+                <ListItemText primary="Original" />
+              </ListItem>
+              */
+              }
+              {(!id.includes("uploader") && !id.includes("drawing")) && row.pdf &&
+                <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => window.open(row.pdf)}>
+                  <ListItemIcon style={{ minWidth: '40px' }}>
+                    <GetApp />
+                  </ListItemIcon>
+                  <ListItemText primary="Pdf" />
+                </ListItem>
+              }
+              {(!id.includes("uploader") && !id.includes("drawing")) && row.geojson &&
+                <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => window.open(row.geojson)}>
+                  <ListItemIcon style={{ minWidth: '40px' }}>
+                    <GetApp />
+                  </ListItemIcon>
+                  <ListItemText primary="Geojson" />
+                </ListItem>
+              }
+              {(!id.includes("uploader") && !id.includes("drawing")) && row.csv &&
+                <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => window.open(row.csv)}>
+                  <ListItemIcon style={{ minWidth: '40px' }}>
+                    <GetApp />
+                  </ListItemIcon>
+                  <ListItemText primary="CSV" />
+                </ListItem>
+              }
+              {(!id.includes("uploader") && !id.includes("drawing")) && row.excel &&
+                <ListItem button style={{ paddingTop: "0px", paddingBottom: "0px" }} onClick={() => window.open(row.excel)}>
+                  <ListItemIcon style={{ minWidth: '40px' }}>
+                    <GetApp />
+                  </ListItemIcon>
+                  <ListItemText primary="Excel" />
+                </ListItem>
+              }
+
+            </List>
           }
         </Popover>
 
       </DataContent>
-      <Metadata open={showMetadata} id={id} handleCloseMetadata={(e) =>handleCloseMetadata(e)}/>
+      <Metadata open={showMetadata} id={id} handleCloseMetadata={(e) => handleCloseMetadata(e)} />
     </Container>
   )
 }

@@ -16,6 +16,7 @@ const ZoomToMap = ({ zoomToMap, setZoomToMap }) => {
     }, [map]);
 
     useEffect(() => {
+        if (!map) return;
         if (zoomToMap) {
 
             if (zoomToMap.includes("uploader")) {
@@ -32,7 +33,7 @@ const ZoomToMap = ({ zoomToMap, setZoomToMap }) => {
                         //console.log(i)
                         idx = i;
                     }
-    
+
                 })
                 var group = layers[idx]
 
@@ -58,6 +59,8 @@ const ZoomToMap = ({ zoomToMap, setZoomToMap }) => {
                 map.getView().fit(candidate.getSource().getExtent())
                 setZoomToMap()
                 map.updateSize();
+             
+            
             } else if (zoomToMap.includes("drawing")) {
 
 
@@ -72,7 +75,7 @@ const ZoomToMap = ({ zoomToMap, setZoomToMap }) => {
                         //console.log(i)
                         idx = i;
                     }
-    
+
                 })
                 var group = layers[idx]
 
@@ -121,8 +124,56 @@ const ZoomToMap = ({ zoomToMap, setZoomToMap }) => {
                     map.getView().fit(feature.getGeometry())
 
                     setZoomToMap()
-                    map.updateSize();
-                }).catch(error =>{ 
+                    
+                    let layers = map.getLayers().getArray();
+                    //console.log(layers);
+                    //console.log(layers[5])
+                    var idx = 0;
+                    layers.forEach(function (l, i) {
+                        // /console.log(l)
+                        if (l.get("id") === 'graticule_layer') {
+                            //console.log(i)
+                            idx = i;
+                        }
+    
+                    })
+                    layers[idx].setVisible(false)
+                    setTimeout(() => {
+                        // remove from DOM
+                        layers[idx].setVisible(true)
+                      }, 3000)
+                 
+                    /*
+                    var layers = map.getLayers().getArray();
+                    //console.log(layers);
+                    //console.log(layers[5])
+                    var idx = 0;
+                    layers.forEach(function (l, i) {
+                        //console.log(l)
+                        if (l instanceof LayerGroup) {
+                            //console.log(i)
+                            idx = i;
+                        }
+
+                    })
+                    var group = layers[idx]
+                    //console.log(group)
+
+                    //var group_arr = layers[idx].getLayers().getArray()
+                    //console.log(group_arr)
+
+
+                    group.getLayers().forEach(function (layer, i) {
+                        if (layer.get('id') === zoomToMap) {
+                            layer.setVisible(false)
+                            //alert('a')
+                            //layer.setVisible(true)
+                            map.updateSize();
+                        }
+                    })
+                    */
+
+                }).catch(error => {
                     alert('Cannot find the layer extent/bounding box')
                 })
 

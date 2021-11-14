@@ -6,7 +6,7 @@ import Config from '../config.json';
 
 export default function LeftMenu({ menu, setMenu, total }) {
   const handleHelp= (event) => {
-    window.open(Config.base_domain + 'Help.pdf')
+    window.open(Config.base_domain + 'HelpFile.pdf')
 };
 
 
@@ -154,12 +154,3 @@ const DescriptionIcon = styled.div`
   }
 `
 */
-const Footer = styled.div`
-  text-align: center;
-  font-size: 12px;
-  font-weight: 600;
-  padding:5px;
-  background-color: black;
-  color:white;
-`;
-

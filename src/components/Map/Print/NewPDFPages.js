@@ -3,13 +3,13 @@ import { Page, Text, Image, View, Document, StyleSheet } from '@react-pdf/render
 import north from './north2.PNG';
 import Config from '../../../config.json';
 
-import logo_1 from '../../About/logo/CIFOR_green_vlr.png';
-import logo_2 from '../../About/logo/agroforestry.png';
-import logo_3 from '../../About/logo/Alliance_logos-ENGLISH.png';
-import logo_4 from '../../About/logo/logo-cirad.png';
-import logo_5 from '../../About/logo/catie.png';
-import logo_6 from '../../About/logo/logo-inbar.png';
-import logo_7 from '../../About/logo/logo-tropenbos-small.png';
+import logo_1 from '../../../logo/CIFOR_green_vlr.png';
+import logo_2 from '../../../logo/agroforestry.png';
+import logo_3 from '../../../logo/Alliance_logos-ENGLISH.png';
+import logo_4 from '../../../logo/logo-cirad.png';
+import logo_5 from '../../../logo/catie.png';
+import logo_6 from '../../../logo/logo-inbar.png';
+import logo_7 from '../../../logo/logo-tropenbos-small.png';
 
 import { ImageWMS as ImageWMSSource } from 'ol/source/';
 

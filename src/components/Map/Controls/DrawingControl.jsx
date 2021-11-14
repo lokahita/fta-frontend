@@ -231,7 +231,7 @@ const DrawingControl = ({ setMapLayer }) => {
                     }
                     <form className="form-inline">
                         <label htmlFor="type2">Geometry type: &nbsp;</label>
-                        <select id="type2" style={{ border: 'solid 1px #ddd;' }}>
+                        <select id="type2" style={{ border: 'solid 1px #ddd' }}>
                             <option value="Point">Point</option>
                             <option value="LineString">LineString</option>
                             <option value="Polygon">Polygon</option>
@@ -248,7 +248,7 @@ const DrawingControl = ({ setMapLayer }) => {
                         <input type="color" id="stroke_color" name="stroke_color" value={strokeColor} onChange={(e) => setStrokeColor(e.target.value)} />
                         <br />
                         <label htmlFor="stroke_width">Stroke Width: &nbsp;</label>
-                        <select id="stroke_width" style={{ border: 'solid 1px #ddd;' }} value={strokeWidth} onChange={(e) => setStrokeWidth(e.target.value)}>
+                        <select id="stroke_width" style={{ border: 'solid 1px #ddd' }} value={strokeWidth} onChange={(e) => setStrokeWidth(e.target.value)}>
                             <option value="0.5">0.5</option>
                             <option value="1">1</option>
                             <option value="1.5">1.5</option>

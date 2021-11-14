@@ -1,7 +1,9 @@
 import './Landing.css';
 import styled from "styled-components";
+import Config from './config.json';
 
 function Landing() {
+
 
 	return (
 		<>
@@ -82,7 +84,7 @@ function Landing() {
 			</section>
 			<section id="geo-blog">
 				<div className="container">
-					<h2>Thematic maps</h2>
+					<h2>Highlighted Maps</h2>
 					<div className="geo-article">
 						<div className="row">
 							<div className="col-md-6">
@@ -93,14 +95,14 @@ function Landing() {
 							<div className="col-md-6">
 								<div className="entry-title">Vegetation maps</div>
 								<p>These 1:50,000 scale ecological vegetation maps cover more than 60 classes of natural and man-made vegetation including various forest types, but also details on logged-over areas, peat swamps, heath forests, oil palm estates, various mixed agroforestry systems, mosaics of fallow and smallholder agriculture.</p>
-								<a href="https://data.cifor.org/dataverse/vegetation_map" target="_blank" className="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain +"#/viewer?identifier=28C6FF20-081D-4BCD-A88E-EE1EBD09FD16"} className="geo-btn btn-secondary">View</a>
 							</div>
 						</div>
 						<div className="row">
 							<div className="col-md-6">
 								<div className="entry-title">Oil palm atlas</div>
 								<p>We also have  Information about the oil palm smallholder plantations in Central and West Kalimantan for 2015 and 2016 </p>
-								<a href="https://nusantara-atlas.org/" target="_blank" className="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain +"#/viewer?identifier=47e6e22c-c376-11eb-ae8f-0242ac190008"} className="geo-btn btn-secondary">View</a>
 							</div>
 							<div className="col-md-6">
 								<div className="geo-thumbnail">
@@ -117,7 +119,7 @@ function Landing() {
 							<div className="col-md-6">
 								<div className="entry-title">Potential restoration</div>
 								<p>This thematic data has been analysed using potential sites and cost analysis. The potential sites have been determined based on data from the Borneo and SWAMP (Sustainable Wetlands Adaptation and Mitigation Program) atlas project. The cost has been calculated based on the cost of the workers’ wages, land acquisition, transportation and seed. Using the highest priority sites means that the locations can be low cost, low maintenance and more likely to achieve the aims of the restoration project.  </p>
-								<a href="" class="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain +"#/viewer?identifier=958ad418-0ee2-11ec-bfa9-0242ac190008"} class="geo-btn btn-secondary">View</a>
 							</div>
 						</div>
 						<div className="row">
@@ -128,20 +130,20 @@ function Landing() {
 							</div>
 							<div className="col-md-6">
 								<div className="geo-thumbnail">
-									<img src="assets/img/oil.png" />
+									<img src="assets/img/potential.png" />
 								</div>
 							</div>
 						</div>
 						<div className="row">
 							<div className="col-md-6">
 								<div className="geo-thumbnail">
-									<img src="assets/img/potential.png" />
+									<img src="assets/img/climate.png" />
 								</div>
 							</div>
 							<div className="col-md-6">
 								<div className="entry-title">Climate Maps</div>
 								<p>These maps show the geographic distribution of the monthly or annual average values of climate variables, i.e., precipitation.</p>
-								<a href="" class="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain +"#/viewer?identifier=5753f586-70c2-11e5-9ed2-0025909b69da"} class="geo-btn btn-secondary">View</a>
 							</div>
 						</div>
 					</div>
@@ -153,8 +155,8 @@ function Landing() {
 					<h2>Didn't find what you need?</h2>
 					<p>Help is full of usefull guides and tutorials to help get you started in no time</p>
 					<ul>
-						<li><a href="#">Search data <i class="las la-angle-right"></i></a></li>
-						<li><a href="#">Contribute new data <i class="las la-angle-right"></i></a></li>
+						<li><a href={Config.base_domain + 'HelpFile.pdf'}>Search data <i class="las la-angle-right"></i></a></li>
+						<li><a href={'https://data.cifor.org/geoportal/contributor/'}>Contribute new data <i class="las la-angle-right"></i></a></li>
 					</ul>
 				</div>
 			</section>
