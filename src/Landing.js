@@ -206,7 +206,7 @@ function Landing() {
 					<h2>Didn't find what you need?</h2>
 					<p>Help is full of usefull guides and tutorials to help get you started in no time</p>
 					<ul>
-						<li><a href={Config.base_domain + 'HelpFile.pdf'}>Search data <i class="las la-angle-right"></i></a></li>
+						<li><a href='#/help'>Search data <i class="las la-angle-right"></i></a></li>
 						<li><a href={'https://data.cifor.org/geoportal/contributor/'}>Contribute new data <i class="las la-angle-right"></i></a></li>
 						<li><a href='#/' onClick={(e)=>setOpen(true)} >Guidelines<i class="las la-angle-right"></i></a></li>
 					</ul>
