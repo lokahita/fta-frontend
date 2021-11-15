@@ -1,12 +1,63 @@
 import './Landing.css';
 import styled from "styled-components";
 import Config from './config.json';
+import Dialog from '@material-ui/core/Dialog';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import { IconButton } from '@material-ui/core';
+import { Close } from '@material-ui/icons';
+import { useState } from 'react';
+
+import Paper from '@material-ui/core/Paper';
+import Draggable from 'react-draggable';
+
+function PaperComponent(props) {
+    return (
+        <Draggable
+            handle="#draggable-dialog-title"
+            cancel={'[class*="MuiDialogContent-root"]'}
+        >
+            <Paper {...props} />
+        </Draggable>
+    );
+}
 
 function Landing() {
+	
+	const [open, setOpen] = useState(false);
 
+   
+	const handleCloseDialog = () => {
+		setOpen(false);
+};
 
 	return (
 		<>
+			<Dialog
+				open={open}
+				PaperComponent={PaperComponent}
+				aria-labelledby="draggable-dialog-title"
+				fullWidth={true}
+				maxWidth="xs"
+			>
+				<DialogTitle style={{ cursor: 'move', padding: '5px 10px', backgroundColor: '#f3f3f3' }} id="draggable-dialog-title">
+					<div style={{ display: 'flex', justifyContent: 'space-between' }}>
+						<span>Guidelines </span>
+						<IconButton size="small" onClick={handleCloseDialog} >
+							<Close />
+						</IconButton>
+					</div>
+				</DialogTitle>
+				<DialogContent style={{ padding: '10px' }}>
+					<ul>
+
+					<li>Geospatial Data Curation Steps <a href="https://doi.org/10.17528/cifor/fta22913" target="_blank">https://doi.org/10.17528/cifor/fta22913</a></li>
+    				<li>Spatial metadata: Guidelines and procedures <a href="https://doi.org/10.17528/cifor/fta21369" target="_blank">https://doi.org/10.17528/cifor/fta21369</a></li>
+    				<li>Geospatial data quality: Guidelines and procedures <a href="https://doi.org/10.17528/cifor/fta21368" target="_blank">https://doi.org/10.17528/cifor/fta21368</a></li>
+
+					</ul>
+				</DialogContent>
+			</Dialog>
 			<section id="geo-hero" style={{ backgroundImage: "url('assets/img/maps.jpeg')" }}>
 				<div className="container d-flex align-items-center">
 					<div className="geo-hero-text">
@@ -95,14 +146,14 @@ function Landing() {
 							<div className="col-md-6">
 								<div className="entry-title">Vegetation maps</div>
 								<p>These 1:50,000 scale ecological vegetation maps cover more than 60 classes of natural and man-made vegetation including various forest types, but also details on logged-over areas, peat swamps, heath forests, oil palm estates, various mixed agroforestry systems, mosaics of fallow and smallholder agriculture.</p>
-								<a href={Config.base_domain +"#/viewer?identifier=28C6FF20-081D-4BCD-A88E-EE1EBD09FD16"} className="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain + "#/viewer?identifier=28C6FF20-081D-4BCD-A88E-EE1EBD09FD16"} className="geo-btn btn-secondary">View</a>
 							</div>
 						</div>
 						<div className="row">
 							<div className="col-md-6">
 								<div className="entry-title">Oil palm atlas</div>
 								<p>We also have  Information about the oil palm smallholder plantations in Central and West Kalimantan for 2015 and 2016 </p>
-								<a href={Config.base_domain +"#/viewer?identifier=47e6e22c-c376-11eb-ae8f-0242ac190008"} className="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain + "#/viewer?identifier=47e6e22c-c376-11eb-ae8f-0242ac190008"} className="geo-btn btn-secondary">View</a>
 							</div>
 							<div className="col-md-6">
 								<div className="geo-thumbnail">
@@ -119,7 +170,7 @@ function Landing() {
 							<div className="col-md-6">
 								<div className="entry-title">Potential restoration</div>
 								<p>This thematic data has been analysed using potential sites and cost analysis. The potential sites have been determined based on data from the Borneo and SWAMP (Sustainable Wetlands Adaptation and Mitigation Program) atlas project. The cost has been calculated based on the cost of the workers’ wages, land acquisition, transportation and seed. Using the highest priority sites means that the locations can be low cost, low maintenance and more likely to achieve the aims of the restoration project.  </p>
-								<a href={Config.base_domain +"#/viewer?identifier=958ad418-0ee2-11ec-bfa9-0242ac190008"} class="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain + "#/viewer?identifier=958ad418-0ee2-11ec-bfa9-0242ac190008"} class="geo-btn btn-secondary">View</a>
 							</div>
 						</div>
 						<div className="row">
@@ -143,7 +194,7 @@ function Landing() {
 							<div className="col-md-6">
 								<div className="entry-title">Climate Maps</div>
 								<p>These maps show the geographic distribution of the monthly or annual average values of climate variables, i.e., precipitation.</p>
-								<a href={Config.base_domain +"#/viewer?identifier=5753f586-70c2-11e5-9ed2-0025909b69da"} class="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain + "#/viewer?identifier=5753f586-70c2-11e5-9ed2-0025909b69da"} class="geo-btn btn-secondary">View</a>
 							</div>
 						</div>
 					</div>
@@ -157,6 +208,7 @@ function Landing() {
 					<ul>
 						<li><a href={Config.base_domain + 'HelpFile.pdf'}>Search data <i class="las la-angle-right"></i></a></li>
 						<li><a href={'https://data.cifor.org/geoportal/contributor/'}>Contribute new data <i class="las la-angle-right"></i></a></li>
+						<li><a href='#/' onClick={(e)=>setOpen(true)} >Guidelines<i class="las la-angle-right"></i></a></li>
 					</ul>
 				</div>
 			</section>
