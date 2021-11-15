@@ -177,11 +177,11 @@ function Landing() {
 							<div className="col-md-6">
 								<div className="entry-title">Peat Depth Maps</div>
 								<p>These maps show the distribution of wetlands, peatlands and the peat depth that covers the tropics and sub tropics (40° N to 60° S: 180° E to -180° W), excluding small islands. It was mapped using 231 meters spatial resolution by combining a hydrological model and annual time series of satellite-derived estimates of soil moisture to represent water flow and surface wetness that were then combined with geomorphological data. </p>
-								<a href="" target="_blank" className="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain + "#/viewer?identifier=d00355ae-45e0-11ec-8a33-0242ac190008"} target="_blank" className="geo-btn btn-secondary">View</a>
 							</div>
 							<div className="col-md-6">
 								<div className="geo-thumbnail">
-									<img src="assets/img/potential.png" />
+									<img src="assets/img/peat_depth.png" />
 								</div>
 							</div>
 						</div>
