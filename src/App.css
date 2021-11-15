@@ -357,22 +357,6 @@ section#geo-page-title {
     padding: 40px;
 }
 
-div#sidebar {
-    text-align: left;
-    background: #0a311c;
-    color: #fff;
-    padding-bottom: 10px;
-    width: 80%;
-}
-
-div#sidebar li {
-    list-style: none;
-}
-
-div#sidebar ul {
-    padding: 0;
-}
-
 .widget_title {
     background: #17783f;
     padding: 10px 20px;
