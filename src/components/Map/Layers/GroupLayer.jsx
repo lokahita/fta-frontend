@@ -20,47 +20,9 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
         });
 
         map.addLayer(layerGroup);
-        /*
-        var wmsSource = new ImageWMSSource({
-            //Config.proxy_domain + 
-            url: 'http://geoportal.palembang.go.id/geoserver/wms',
-            params: { 'LAYERS': 'Dukcapil-PLG:jumlah_penduduk_pekerjaan_kec_ar_167120200831044858' },
-            ratio: 1,
-            serverType: 'geoserver',
-            crossOrigin: 'anonymous'
-        });
-        var wmsLayer = new ImageLayer({
-            source: wmsSource
-        })
-        wmsLayer.set('id', 'id')
-        wmsLayer.set('title', 'title')
+        //alert('a');
+        //console.log(map)
 
-        
-        //console.log(map.getLayerGroup())
-        //var group = map.getLayerGroup()
-
-        //var layers = peta.getLayers().getArray();
-        //var group = layers[i_group].getLayers().getArray()
-        //console.log(layers)
-        //group.push(wmsLayer)
-        //console.log(layers)
-        layerGroup.getLayers().array_.push(wmsLayer)
-
-
-        var esriSource = new ImageArcGISRest({
-            //Config.proxy_domain + 
-            ratio: 1,
-            params: {},
-            url: 'https://geoservices.big.go.id/rbi/rest/services/HIDROGRAFI/Danau_50K/MapServer',
-        });
-        var esriLayer = new ImageLayer({
-            source: esriSource
-        })
-        esriLayer.set('id', 'id2')
-        esriLayer.set('title', 'title2')
-        layerGroup.getLayers().array_.push(esriLayer)
-        */
-        //ImageArcGISRest
 
         return () => {
             if (map) {
@@ -136,7 +98,31 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
                             wmsLayer.set('title', l.title)
                             //map.addLayer(wmsLayer)
                             group.getLayers().array_.push(wmsLayer)
-                            map.updateSize();
+                            //and now asign the listeners on the source of it/
+                            wmsSource.on('imageloadstart', function (event) {
+                                //console.log('imageloadstart event', event);
+                                map.updateSize();
+                                //replace with your custom action
+                                //var elemId = event.target.params_.ELEMENTID;
+                                //document.getElementById(elemId).src = 'css/images/tree_loading.gif';
+                            });
+
+                            wmsSource.on('imageloadend', function (event) {
+                                //console.log('imageloadend event', event);
+                                map.updateSize();
+                                //replace with your custom action
+                                //var elemId = event.target.params_.ELEMENTID;
+                                //document.getElementById(elemId).src = 'css/images/ok.png';
+                            });
+
+                            wmsSource.on('imageloaderror', function (event) {
+                                console.log('imageloaderror event', event);
+                                alert('imageloaderror event', event)
+                                //replace with your custom action
+                                //var elemId = event.target.params_.ELEMENTID;
+                                //document.getElementById(elemId).src = 'css/images/no.png';
+                            });
+
                         } else {
                             var esriSource = new ImageArcGISRest({
                                 //Config.proxy_domain + 
@@ -145,7 +131,7 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
                                 url: l.url,
                             });
                             var esriLayer = new ImageLayer({
-                                source: esriSource
+                                source: esriSource,
                             })
                             esriLayer.set('id', l.id)
                             esriLayer.set('title', l.title)
@@ -154,20 +140,20 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
                             map.updateSize();
                         }
 
-                    }else if(l.tipe === 'zip'){
+                    } else if (l.tipe === 'zip') {
                         var shapeSource = new VectorSource({
                             features: new GeoJSON().readFeatures(l.layer, {
                                 featureProjection: 'EPSG:3857'
                             }),
                             wrapX: false
                         })
-    
+
                         var shapeLayer = new VectorLayer({
                             source: shapeSource,
                             zIndex: 899,
                         });
 
-                    
+
                         shapeLayer.set('id', l.id)
                         shapeLayer.set('title', l.title)
                         //map.addLayer(wmsLayer)
@@ -177,6 +163,7 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
                 }
             });
             map.updateSize();
+
         }
     }, [mapLayer]);
 
