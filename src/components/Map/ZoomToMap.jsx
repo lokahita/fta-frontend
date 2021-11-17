@@ -124,7 +124,7 @@ const ZoomToMap = ({ zoomToMap, setZoomToMap }) => {
                     map.getView().fit(feature.getGeometry())
 
                     setZoomToMap()
-                    
+                    /*
                     let layers = map.getLayers().getArray();
                     //console.log(layers);
                     //console.log(layers[5])
@@ -142,7 +142,7 @@ const ZoomToMap = ({ zoomToMap, setZoomToMap }) => {
                         // remove from DOM
                         layers[idx].setVisible(true)
                       }, 3000)
-                 
+                      */
                     /*
                     var layers = map.getLayers().getArray();
                     //console.log(layers);
