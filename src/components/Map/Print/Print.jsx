@@ -408,7 +408,7 @@ export default function Print({ open, render, setRender, handleClosePrint, mapLa
                             // <Button  onClick={handleClose}>Download PDF</Button>
                             }
                             <PDFDownloadLink component="button" document={<NewPDFPages mapLayer={mapLayer} height={height} legend={legend} size={size} orientation={orientation} data={capture} dataClegend={clegend} title={title} description={description} />} 
-                            fileName="IcrafMap.pdf" className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButtonGroup-grouped MuiButtonGroup-groupedVertical MuiButtonGroup-groupedOutlined MuiButtonGroup-groupedOutlinedVertical MuiButtonGroup-groupedOutlinedPrimary MuiButton-outlinedPrimary" >
+                            fileName="YourMap.pdf" className="MuiButtonBase-root MuiButton-root MuiButton-outlined MuiButtonGroup-grouped MuiButtonGroup-groupedVertical MuiButtonGroup-groupedOutlined MuiButtonGroup-groupedOutlinedVertical MuiButtonGroup-groupedOutlinedPrimary MuiButton-outlinedPrimary" >
                             {({ blob, url, loading, error }) =>
                                 loading ? 'updating document..' : 'Download pdf'
                             }
