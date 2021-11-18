@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title></title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Hind:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+	<link rel='stylesheet' id='bootstrap-4-css'  href='https://www.foreststreesagroforestry.org/wp-content/themes/FTA/assets/css/bootstrap.css?ver=v4.0.0' type='text/css' media='all' />
+	<link rel='stylesheet' id='sb-font-awesome-css'  href='https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css?ver=5.8.1' type='text/css' media='all' />
+	<link rel="stylesheet" href="https://maxst.icons8.com/vue-static/landings/line-awesome/line-awesome/1.3.0/css/line-awesome.min.css">
+	<script type='text/javascript' src='https://www.foreststreesagroforestry.org/wp-includes/js/jquery/jquery.min.js?ver=3.6.0' id='jquery-core-js'></script>
+	<link rel="stylesheet" type="text/css" href="style.css">
+</head>
+<body>
+	<section id="geo-page-title">
+		<div class="container">
+			<div class="row d-flex justify-content-between align-middle">
+				<h1>FTA Geospatial Data Management Guidelines</h1>
+				<div class="col-md-3">
+					<p>Last update: 15 November 2021</p>
+				</div>
+			</div>
+		</div>
+	</section>
+	<section>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-3 hide-mobile">
+					<div id="sidebar">
+						<div class="sidebar__inner">
+							<div class="widget_title">
+								Guidelines
+							</div>
+							<ul>
+								<li>
+									<a href="#getting-started">Getting started</a>
+								</li>
+								<li>
+									<a href="#curation">Geospatial Data Curation</a>
+								</li>
+								<li>
+									<a href="#metadata">Geospatial Metadata Development</a>
+								</li>
+								<li>
+									<a href="#quality">Geospatial Data Quality</a>
+								</li>
+								
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-12 col-md-9">
+					<div class="help-single">
+						<section id="getting-started" class="text-left">
+							<h1>Introduction</h1>
+							<p class="big">As a collaborative research project, involving numerous researchers from member organisations, data sharing is important for FTA to optimise the use of their data inventory as well as for exchanging their knowledge, thus improving the quality and exposure of FTA research. FTA geoportal has been designed and developed as a system that can facilitate effective and efficient (geospatial) data access to, and data sharing among, internal data inventory as well as that of other organisations. Moreover, the geoportal is also expected to fulfil the need for showcasing or disseminating FTA research to a wider community/audience.</p>
+							<p>In order to make the most benefit of the FTA Geoportal, geospatial data must be prepared appropriately to meet the quality requirements. Data curation is required to ensure the data management is conducted in the most appropriate way, and metadata are required for conveying the data quality as well as other descriptive information concerning geospatial data for data sharing purposes. These documents are prepared by FTA team as the guidelines for data management under the FTA.</p>
+						</section>
+						<section id="curation" class="text-left">
+							<h2>Geospatial Data Curation</h2>
+							<p>Digital curation can be defined as maintaining and adding value to a trusted body of digital information for current and future use (Beagrie 2006). It is beyond archiving and preservation. Digital data curation is concerned with data management "for as long as it continues to be of scholarly, scientific, research and/or administrative interest, with the aim of supporting reproducibility of results, reuse of and adding value to that data, managing it from its point of creation until it is determined not to be useful, and ensuring its long-term accessibility and preservation, authenticity and integrity" (DCC n.d. in Sandifer n.d.).</p>
+<a href="https://doi.org/10.17528/cifor/fta22913">
+							<img src="assets/img/data-curation.png"
+width="300"
+>
+</a>							<figcaption style="text-align: left">Figure 1. Geospatial Data Curation</figcaption>
+</section>
+<section id="metadata" class="text-left">
+							<h2>Geospatial Metadata Development</h2>
+							<p>Spatial metadata or geographic metadata can be defined as metadata applicable to geographic data and information. This metadata can be stored along with geospatial data (vector and raster format) or may be listed in a separate document. There are many standards for geospatial metadata, including the International Organization for Standardization (ISO) and Federal Geographic Data Committee (FGDC) metadata standards. This document adopts (ISO) 19115-1:2014 - Geographic Information - Metadata as the standard for developing geographic information or spatial metadata. </p>
+<a href="https://doi.org/10.17528/cifor/fta21369"><img src="assets/img/metadata-guideline.png"
+width="300"
+></a>
+							<figcaption style="text-align: left">Figure 2. Geospatial Metadata Development</figcaption>
+
+						</section>
+						<section id="quality" class="text-left">
+							<h2>Geospatial Data Quality</h2>
+							<p>In this document, the term "geospatial data" is used to refer to data that provides information on the location of features, attributes, and often temporal information as well. Different types of geospatial data can be produced for different purposes and through different processes.</p>
+<a href="https://doi.org/10.17528/cifor/fta21368"><img src="assets/img/data-quality.png"
+width="300"
+></a>
+							<figcaption style="text-align: left">Figure 3. Geospatial Data Quality</figcaption>
+						</section>
+						</div>
+				</div>
+			</div>
+		</div>
+	</section>
+	<script type='text/javascript' src='https://www.foreststreesagroforestry.org/wp-content/themes/FTA/assets/js/bootstrap.js?ver=v4.0.0' id='bootstrap-4-js-js'></script>
+	<script type="text/javascript">
+		var sidebarWidth = jQuery('#sidebar').width();
+		jQuery('a[href^="#"]').on('click', function(e) {
+		    e.preventDefault();
+
+		    const scrollTop =
+		        jQuery(jQuery(this).attr('href')).position().top + jQuery('#geo-page-title').outerHeight();
+
+		    jQuery('html, body').animate({ scrollTop });
+		})
+		jQuery(window).scroll(function(){
+		  	var sticky = jQuery('#sidebar'),
+		      scroll = jQuery(window).scrollTop();
+
+			jQuery('.help-single section').each(function(i) {
+	            if (jQuery(this).position().top <= scroll - 100) {
+	                jQuery('#sidebar li a.active').removeClass('active');
+	                jQuery('#sidebar li  a').eq(i).addClass('active');
+	            }
+	        });
+		  	if (scroll >= 170){
+			  	sticky.addClass('fixed');
+			  	sticky.width(sidebarWidth);
+		  	}else{
+			  	sticky.removeClass('fixed');
+			  	sticky.width('80%')
+		  	} 
+		});
+	</script>
+</body>
+</html>

@@ -6,7 +6,7 @@ import Config from '../config.json';
 
 export default function LeftMenu({ menu, setMenu, total }) {
   const handleHelp= (event) => {
-    window.open(Config.base_domain + 'HelpFile.pdf')
+    window.open(Config.base_domain + 'help.html')
 };
 
 

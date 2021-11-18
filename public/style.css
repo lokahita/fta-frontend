@@ -1,5 +1,27 @@
 body{
-	font-family: 'Hind', sans-serif;
+    font-family: 'Hind', sans-serif;
+}
+img {
+    max-width: 100%;
+}
+p {
+    color: #222222;
+    font-size: 16px;
+    font-weight: 100;
+    line-height: 26px;
+}
+p.big {
+    font-size: 22px;
+    line-height: 28px;
+}
+.dark {
+    color: #393939;
+}
+.no-bg:before {
+    display: none;
+}
+section#geo-hero {
+    background-color: whitesmoke;
 }
 section#geo-hero {
     height: 507px;
@@ -9,8 +31,12 @@ section#geo-hero {
 section#geo-hero .container {
     height: 100%;
     position: relative;
+    justify-content: center;
 }
 
+section#faq {
+    text-align: left;
+}
 section {
     text-align: center;
     position: relative;
@@ -18,14 +44,14 @@ section {
 }
 
 section#geo-hero:before {
-	content: '';
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	bottom: 0;
-	background: rgb(94 94 94 / 40%);
-	z-index: 0;
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgb(94 94 94 / 40%);
+    z-index: 0;
 }
 .geo-hero-text h4 {
     font-size: 26px;
@@ -205,12 +231,195 @@ section#geo-cta ul li {
 section#geo-cta ul li a {
     color: #54a4c7;
 }
-@media only screen and (max-width: 600px) {
-	.entry-title {
-	    margin-top: 20px;
-	}
+.grid {
+    display: grid;
+    grid-gap: 1rem;
+    grid-template-columns: repeat(4, 1fr);
+}
+.grid article {
+    border: solid 1px #ddd;
+    text-align: left;
+    position: relative;
+    aspect-ratio: 1;
+}
+.grid article a {
+    display: block;
+    height: 100%;
+    padding: 15px;
+}
 
-	a.geo-btn.btn-secondary {
-	    margin-bottom: 20px;
-	}
+.grid article:hover {
+    border-color: #2E90EB;
+}
+.grid .entry-title {
+    font-size: 18px;
+    line-height: 23px;
+}
+
+.grid .read-more {
+    color: #2E90EB;
+    position: absolute;
+    bottom: 10px;
+    right: 15px;
+    font-size: 24px;
+}
+
+.grid .entry-content {
+    color: #7c7c7c;
+}
+.accordion .card {
+    border: none;
+}
+
+.accordion .card-header {
+    background: none;
+    border: none;
+}
+
+.accordion .card-header button {
+    padding: 0;
+    color: #212529;
+    font-weight: bold;
+    font-size: 18px;
+    width: 100%;
+    text-align: left;
+    position: relative;
+}
+
+.accordion .card-body {
+    padding: 0 20px;
+}
+.accordion .card-header button i {
+    color: #558174;
+    float: right;
+    border: solid 1px #ddd;
+    font-size: 12px;
+    width: 30px;
+    height: 30px;
+    border-radius: 30px;
+    text-align: center;
+    line-height: 30px;
+    display: inline-block;
+    vertical-align: bottom;
+}
+.accordion .card-header button.collapsed i {
+    transform: rotate(180deg);
+}
+section#geo-page-title {
+    background: whitesmoke;
+    padding: 40px;
+}
+
+div#sidebar {
+    text-align: left;
+    background: #0a311c;
+    color: #fff;
+    padding-bottom: 10px;
+    width: 80%;
+}
+
+div#sidebar li {
+    list-style: none;
+}
+
+div#sidebar ul {
+    padding: 0;
+}
+
+.widget_title {
+    background: #17783f;
+    padding: 10px 20px;
+    text-transform: uppercase;
+}
+
+div#sidebar li a {
+    color: #fff;
+    padding: 10px 20px;
+    display: inline-block;
+    font-size: 15px;
+}
+.help-single section {
+    padding-top: 0;
+}
+
+.help-single h1 {
+    font-size: 44px;
+    margin-bottom: 20px;
+}
+div#sidebar.fixed {
+    position: fixed;
+    top: 50px;
+}
+figcaption {
+    margin: 25px;
+    text-align: center;
+    color: #7a7a7a;
+}
+section#geo-page-title input {
+    border: none;
+    background: none;
+    font-size: 13px;
+}
+
+section#geo-page-title button {
+    border: none;
+    background: none;
+    float: right;
+}
+
+section#geo-page-title form {
+    border: solid 1px #ddd;
+    padding: 6px;
+    text-align: left;
+    width: 200px;
+}
+
+section#geo-page-title input:focus {
+    outline: none;
+}
+
+section#geo-page-title p {
+    font-size: 14px;
+}
+div#sidebar li a.active {
+    color: #50695b;
+}
+
+div#sidebar li a:hover {
+    text-decoration: none;
+}
+.grid a:hover{
+    text-decoration: none;
+}
+@media only screen and (max-width: 768px) {
+    .hide-mobile {
+        display: none;
+    }
+    .entry-title {
+        margin-top: 20px;
+    }
+
+    a.geo-btn.btn-secondary {
+        margin-bottom: 20px;
+    }
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+@media only screen and (max-width: 480px){
+    .grid {
+        grid-template-columns: repeat(1, 1fr);
+    }
+
+    .accordion .card-header, .accordion .card-body {
+        padding: 0.75rem 0;
+    }
+    section#geo-page-title p {
+        text-align: center;
+        margin-top: 10px;
+    }
+
+    section#geo-page-title form {
+        margin: 0 auto;
+    }
 }
