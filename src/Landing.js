@@ -151,7 +151,7 @@ function Landing() {
 						</div>
 						<div className="row">
 							<div className="col-md-6">
-								<div className="entry-title">Oil palm atlas</div>
+								<div className="entry-title">Oil palm</div>
 								<p>We also have  Information about the oil palm smallholder plantations in Central and West Kalimantan for 2015 and 2016 </p>
 								<a href={Config.base_domain + "#/viewer?identifier=47e6e22c-c376-11eb-ae8f-0242ac190008"} className="geo-btn btn-secondary">View</a>
 							</div>
@@ -177,7 +177,7 @@ function Landing() {
 							<div className="col-md-6">
 								<div className="entry-title">Peat Depth Maps</div>
 								<p>These maps show the distribution of wetlands, peatlands and the peat depth that covers the tropics and sub tropics (40° N to 60° S: 180° E to -180° W), excluding small islands. It was mapped using 231 meters spatial resolution by combining a hydrological model and annual time series of satellite-derived estimates of soil moisture to represent water flow and surface wetness that were then combined with geomorphological data. </p>
-								<a href={Config.base_domain + "#/viewer?identifier=d00355ae-45e0-11ec-8a33-0242ac190008"} target="_blank" className="geo-btn btn-secondary">View</a>
+								<a href={Config.base_domain + "#/viewer?identifier=d00355ae-45e0-11ec-8a33-0242ac190008"} className="geo-btn btn-secondary">View</a>
 							</div>
 							<div className="col-md-6">
 								<div className="geo-thumbnail">
@@ -206,9 +206,9 @@ function Landing() {
 					<h2>Didn't find what you need?</h2>
 					<p>Help is full of usefull guides and tutorials to help get you started in no time</p>
 					<ul>
-						<li><a href={Config.base_domain + "help.html"}>Search data <i class="las la-angle-right"></i></a></li>
-						<li><a href={'https://data.cifor.org/geoportal/contributor/'}>Contribute new data <i class="las la-angle-right"></i></a></li>
-						<li><a href={Config.base_domain + "guidelines.html"} >Guidelines<i class="las la-angle-right"></i></a></li>
+						<li><a href={Config.base_domain + "help.html"} target="_blank">Search data <i class="las la-angle-right"></i></a></li>
+						<li><a href={'https://data.cifor.org/geoportal/contributor/'} target="_blank">Contribute new data <i class="las la-angle-right"></i></a></li>
+						<li><a href={Config.base_domain + "guidelines.html"} target="_blank" >Guidelines<i class="las la-angle-right"></i></a></li>
 					</ul>
 				</div>
 			</section>
