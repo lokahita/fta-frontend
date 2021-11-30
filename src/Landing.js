@@ -90,37 +90,37 @@ function Landing() {
 						</ol>
 						<div className="carousel-inner">
 							<div class="carousel-item active">
-								<img src="assets/img/browse-slider.png" alt="First slide" width="500px" />
+								<img src="assets/img/browse-slider.png" alt="First slide" width="800" />
 								<h3>Discover geospatial data resources</h3>
 								<p>Search maps with either a geographic location or criteria designated on a map. Search results are displayed as summary statements derived from the metadata records citing each information item found.</p>
 							</div>
 							<div className="carousel-item">
-								<img src="assets/img/view-slider.png" alt="Second slide" width="500px" />
+								<img src="assets/img/view-slider.png" alt="Second slide" width="800" />
 								<h3>Preview geospatial data resources</h3>
 								<p>Discover and view mapped data maintained on web-accessible maps (live maps) without launching a map viewer.<br /><br /></p>
 							</div>
 							<div className="carousel-item">
-								<img src="assets/img/compare-slider.png" alt="Third slide" width="500px" />
+								<img src="assets/img/compare-slider.png" alt="Third slide" width="800" />
 								<h3>Create maps that combine geospatial resources</h3>
 								<p>Combine mapped data from different live map sources from the geoportal data catalogue. You can then view the composite map during the same geoportal session.</p>
 							</div>
 							<div className="carousel-item">
-								<img src="assets/img/print-slider.png" alt="Fourth slide" width="500px" />
+								<img src="assets/img/print-slider.png" alt="Fourth slide" width="800" />
 								<h3>Compare, print and download geospatial data resources</h3>
 								<p>You can compare existing data and download the comparison in CSV, PDF or JPEG format.<br /><br /></p>
 							</div>
 							<div className="carousel-item">
-								<img src="assets/img/analysis-slider.png" alt="Fifth slide" width="500px" />
+								<img src="assets/img/analysis-slider.png" alt="Fifth slide" width="800" />
 								<h3>Data Analysis</h3>
 								<p>A simple overlay analysis can be achieved by superimposing the multiple layers or datasets that represent different themes for analysing or identifying relationships in each layer</p>
 							</div>
 							<div className="carousel-item">
-								<img src="assets/img/upload-slider.png" alt="Sixth slide" width="500px" />
+								<img src="assets/img/upload-slider.png" alt="Sixth slide" width="800" />
 								<h3>Upload local or private geospatial data</h3>
 								<p>You can upload your shape file data, i.e., research area, to the geoportal and review it with the existing data catalogue and baseline map.</p>
 							</div>
 							<div className="carousel-item">
-								<img src="assets/img/draw-slider.png" alt="Seventh slide" width="500px" />
+								<img src="assets/img/draw-slider.png" alt="Seventh slide" width="800" />
 								<h3>Add primitive spatial objects</h3>
 								<p>You can add spatial objects including points, lines and polygons to the geoportal.<br /><br /></p>
 							</div>
