@@ -5,6 +5,7 @@ import BasemapLayer from "./BasemapLayer";
 import GraticuleLayer from "./GraticuleLayer";
 import ArcgisTileLayer from "./ArcgisTileLayer";
 import ArcgisWMSLayer from "./ArcgisWMSLayer";
+import GeonodeWMSLayer from "./GeonodeWMSLayer"
 
 export {
 	Layers,
@@ -13,5 +14,6 @@ export {
 	BasemapLayer,
 	GraticuleLayer,
 	ArcgisWMSLayer,
-	ArcgisTileLayer
+	ArcgisTileLayer,
+	GeonodeWMSLayer 
 }

@@ -54,8 +54,12 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
     const [title, setTitle] = useState('title');
     const [analysis, setAnalysis] = useState(false);
     const [table, setTable] = useState(false);
-    const [layers, setLayers] = useState([true, true, true, true, true, true, true]);
+    const [url1, setUrl1] = useState("");
+    const [url2, setUrl2] = useState("");
+    const [url3, setUrl3] = useState("");
 
+    const [layers, setLayers] = useState([true, true, true, true, true, true, true]);
+    /*
     const urlCanopyTile = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_CanopyCover/IndonesiaCanopyCover2018/MapServer'
     const urlPaddyTile = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_CommodityDistribution/Paddy_Distribution_2019/MapServer'
     const urlCoffeeDistributionTile = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_CommodityDistribution/Coffe_Distribution_2019/MapServer'
@@ -63,10 +67,50 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
     const urlForest = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_Forest_KLHK/Primary_Swamp_Forest/MapServer'
     const oilPalm = 'https://forests2020.ipb.ac.id/arcgis/rest/services/UNDP/OilPalmAustin/MapServer'
     const alertDevegetation = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_Devegetation/Devegetation_2019/MapServer'
+    */
+    const url ="https://geonode.cifor.org/geoserver/ows"
 
     useEffect(() => {
         //props.setTheme(false)
         if (open) {
+
+            var wmsSource = new ImageWMSSource({
+                url: url,
+                params: { 'LAYERS': 'geonode:KapuasHulu2000_Geo' },
+                ratio: 1,
+                serverType: 'geoserver',
+                crossOrigin: 'Anonymous'
+            });
+
+            //var resolution = peta.getView().getResolution();
+            //console.log(resolution)
+            var graphicUrl = wmsSource.getLegendUrl();
+            setUrl1(graphicUrl);
+
+            
+            var wmsSource2 = new ImageWMSSource({
+                url: url,
+                params: { 'LAYERS': 'geonode:KapuasHulu2019_Geo' },
+                ratio: 1,
+                serverType: 'geoserver',
+                crossOrigin: 'Anonymous'
+            });
+
+            var graphicUrl2= wmsSource2.getLegendUrl();
+            setUrl2(graphicUrl2);
+
+            var wmsSource3 = new ImageWMSSource({
+                url: url,
+                params: { 'LAYERS': 'geonode:KapuasHulu2038_Geo' },
+                ratio: 1,
+                serverType: 'geoserver',
+                crossOrigin: 'Anonymous'
+            });
+
+            var graphicUrl3 = wmsSource3.getLegendUrl();
+            setUrl3(graphicUrl3);
+            /*
+         
             const requestOptions = {
                 method: 'GET'
             };
@@ -246,6 +290,7 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
                     }
                 }
             })
+            */
         }
     }, [open])
 
@@ -260,13 +305,13 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
         setTitle(title)
         setTable(true)
     }
- 
+
     function showHide(id) {
         const data = layers.slice();
         //console.log(data[0]);
         //var index = mapLayer.findIndex(x => x.id === id);
         //console.log(index);
-        data[id-1]= !data[id-1]
+        data[id - 1] = !data[id - 1]
         setLayers(data);
 
         //setLayers(oldArray => [...oldArray, newArray])
@@ -331,6 +376,74 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
                                     </TableRow>
                                 </TableHead>
                                 <TableBody>
+
+                                    <TableRow key="1">
+                                        <TableCell scope="row">
+                                            CIFOR
+                                        </TableCell>
+                                        <TableCell>
+                                            Kapuas Hulu Vegetation 2000
+                                        </TableCell>
+                                        <TableCell>
+                                            <div id="legend1">
+                                            <img crossOrigin="Anonymous" referrerPolicy="origin" src={url1} alt={'Kapuas Hulu Vegetation 2000'} />
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            {
+                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                            }
+                                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(1)} >
+                                                {layers[0] ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow key="2">
+                                        <TableCell scope="row">
+                                            CIFOR
+                                        </TableCell>
+                                        <TableCell>
+                                            Kapuas Hulu Vegetation 2019
+                                        </TableCell>
+                                        <TableCell>
+                                            <div id="legend2">
+                                            <img crossOrigin="Anonymous" referrerPolicy="origin" src={url2} alt={'Kapuas Hulu Vegetation 2019'} />
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            {
+                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                            }
+                                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(2)} >
+                                                {layers[1] ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                    <TableRow key="3">
+                                        <TableCell scope="row">
+                                            CIFOR
+                                        </TableCell>
+                                        <TableCell>
+                                            Kapuas Hulu Vegetation 2038
+                                        </TableCell>
+                                        <TableCell>
+                                            <div id="legend3">
+                                            <img crossOrigin="Anonymous" referrerPolicy="origin" src={url3} alt={'Kapuas Hulu Vegetation 2038'} />
+                                            </div>
+                                        </TableCell>
+                                        <TableCell>
+                                            {
+                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                            }
+                                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(3)} >
+                                                {layers[2] ? <Visibility /> : <VisibilityOff />}
+                                            </IconButton>
+                                        </TableCell>
+                                    </TableRow>
+                                   
+                                    {
+                                        /*
+                                    
                                     <TableRow key="1">
                                         <TableCell scope="row">
                                             IPB
@@ -465,6 +578,8 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
                                             </IconButton>
                                         </TableCell>
                                     </TableRow>
+                                    */
+                                    }
                                 </TableBody>
                             </Table>
                         </TableContainer>

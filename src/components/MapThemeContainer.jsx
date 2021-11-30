@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import { fromLonLat } from "ol/proj";
-import { Layers, BasemapLayer, ArcgisTileLayer, ArcgisWMSLayer } from "./Map/Layers";
+import { Layers, BasemapLayer, ArcgisTileLayer, ArcgisWMSLayer, GeonodeWMSLayer } from "./Map/Layers";
 import {Controls, ZoomControl, AttributionControl} from "./Map/Controls";
 import Map from "./Map/MapThematic";
 export default function MapThemeContainer({ center, zoom, basemap, layers}) {
@@ -11,7 +11,7 @@ export default function MapThemeContainer({ center, zoom, basemap, layers}) {
     const urlForest = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_Forest_KLHK/Primary_Swamp_Forest/MapServer'
     const oilPalm = 'https://forests2020.ipb.ac.id/arcgis/rest/services/UNDP/OilPalmAustin/MapServer'
     const alertDevegetation = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_Devegetation/Devegetation_2019/MapServer'
-
+    const url ="https://geonode.cifor.org/geoserver/ows"
   return (
     <Map center={fromLonLat(center)} zoom={zoom} basemap={basemap}>
       <Layers>
@@ -19,7 +19,11 @@ export default function MapThemeContainer({ center, zoom, basemap, layers}) {
           basemap={basemap}
           zIndex={0}
         />
-
+          <GeonodeWMSLayer url={url} id={'cifor1'} layer={'geonode:KapuasHulu2000_Geo'} visible={layers[0]} />
+          <GeonodeWMSLayer url={url} id={'cifor2'} layer={'geonode:KapuasHulu2019_Geo'} visible={layers[1]} />
+          <GeonodeWMSLayer url={url} id={'cifor3'} layer={'geonode:KapuasHulu2038_Geo'} visible={layers[2]} />
+        {
+          /*
         <ArcgisTileLayer url={urlCanopyTile} id={'canopy'} visible={layers[0]} />
         <ArcgisTileLayer url={urlPaddyTile} id={'paddy'} visible={layers[1]}  />
         <ArcgisTileLayer url={urlCoffeeDistributionTile} id={'coffe'}  visible={layers[2]}   />
@@ -27,7 +31,8 @@ export default function MapThemeContainer({ center, zoom, basemap, layers}) {
         <ArcgisWMSLayer url={urlForest} id={'forest'} visible={layers[4]}  />
         <ArcgisWMSLayer url={oilPalm} id={'oilPalm'} visible={layers[5]}  />
         <ArcgisWMSLayer url={alertDevegetation} id={'alertDevegetation'} visible={layers[6]}  />
-
+          */
+        }
       </Layers>
       <Controls>
 
