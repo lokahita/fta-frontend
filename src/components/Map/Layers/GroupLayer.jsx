@@ -117,7 +117,7 @@ const GroupLayer = ({ zIndex = 0, mapLayer, identifierDelete, setIdentifierDelet
 
                             wmsSource.on('imageloaderror', function (event) {
                                 console.log('imageloaderror event', event);
-                                alert('imageloaderror event', event)
+                                //alert('imageloaderror event', event)
                                 //replace with your custom action
                                 //var elemId = event.target.params_.ELEMENTID;
                                 //document.getElementById(elemId).src = 'css/images/no.png';
