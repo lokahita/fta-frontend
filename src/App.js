@@ -549,9 +549,9 @@ function App() {
           <ImageList>
             <img alt="logo" style={{ maxHeight: "40px" }} src={logo_alliance} width="100px" />
             <img alt="logo" style={{ maxHeight: "30px" }} src={logo_catie} />
-            <img alt="logo" style={{ maxHeight: "30px" }} src={logo_cirad} width="60px" />
+            <img alt="logo" style={{ maxHeight: "20px" }} src={logo_cirad} width="60px" />
             <img alt="logo" style={{ maxHeight: "30px" }} src={logo_inbar} />
-            <img alt="logo" style={{ maxHeight: "30px" }} src={logo_tropenbos} />
+            <img alt="logo" style={{ maxHeight: "50px" }} src={logo_tropenbos} />
             <img alt="logo" style={{ maxHeight: "30px" }} src={logo_agroforestry} />
           </ImageList>
         </BottomTwo>

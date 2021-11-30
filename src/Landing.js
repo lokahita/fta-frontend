@@ -10,26 +10,30 @@ import { useState } from 'react';
 
 import Paper from '@material-ui/core/Paper';
 import Draggable from 'react-draggable';
+import TopMenu from './components/TopMenuFront';
+import NavMenu from './components/NavMenu';
+import BottomMenu from './components/BottomMenu';
+
 
 function PaperComponent(props) {
-    return (
-        <Draggable
-            handle="#draggable-dialog-title"
-            cancel={'[class*="MuiDialogContent-root"]'}
-        >
-            <Paper {...props} />
-        </Draggable>
-    );
+	return (
+		<Draggable
+			handle="#draggable-dialog-title"
+			cancel={'[class*="MuiDialogContent-root"]'}
+		>
+			<Paper {...props} />
+		</Draggable>
+	);
 }
 
 function Landing() {
-	
+
 	const [open, setOpen] = useState(false);
 
-   
+
 	const handleCloseDialog = () => {
 		setOpen(false);
-};
+	};
 
 	return (
 		<>
@@ -51,13 +55,17 @@ function Landing() {
 				<DialogContent style={{ padding: '10px' }}>
 					<ul>
 
-					<li>Geospatial Data Curation Steps <a href="https://doi.org/10.17528/cifor/fta22913" target="_blank">https://doi.org/10.17528/cifor/fta22913</a></li>
-    				<li>Spatial metadata: Guidelines and procedures <a href="https://doi.org/10.17528/cifor/fta21369" target="_blank">https://doi.org/10.17528/cifor/fta21369</a></li>
-    				<li>Geospatial data quality: Guidelines and procedures <a href="https://doi.org/10.17528/cifor/fta21368" target="_blank">https://doi.org/10.17528/cifor/fta21368</a></li>
+						<li>Geospatial Data Curation Steps <a href="https://doi.org/10.17528/cifor/fta22913" target="_blank">https://doi.org/10.17528/cifor/fta22913</a></li>
+						<li>Spatial metadata: Guidelines and procedures <a href="https://doi.org/10.17528/cifor/fta21369" target="_blank">https://doi.org/10.17528/cifor/fta21369</a></li>
+						<li>Geospatial data quality: Guidelines and procedures <a href="https://doi.org/10.17528/cifor/fta21368" target="_blank">https://doi.org/10.17528/cifor/fta21368</a></li>
 
 					</ul>
 				</DialogContent>
 			</Dialog>
+			<TopMenu />
+			<div style={{ borderTop: "1px solid #ddd" }}>
+				<NavMenu />
+			</div>
 			<section id="geo-hero" style={{ backgroundImage: "url('assets/img/maps.jpeg')" }}>
 				<div className="container d-flex align-items-center">
 					<div className="geo-hero-text">
@@ -206,12 +214,15 @@ function Landing() {
 					<h2>Didn't find what you need?</h2>
 					<p>Help is full of usefull guides and tutorials to help get you started in no time</p>
 					<ul>
-						<li><a href={Config.base_domain + "help.html"} target="_blank">Search data <i class="las la-angle-right"></i></a></li>
+						<li><a href={Config.base_domain + "help.html"}>Search data <i class="las la-angle-right"></i></a></li>
 						<li><a href={'https://data.cifor.org/geoportal/contributor/'} target="_blank">Contribute new data <i class="las la-angle-right"></i></a></li>
-						<li><a href={Config.base_domain + "guidelines.html"} target="_blank" >Guidelines<i class="las la-angle-right"></i></a></li>
+						<li><a href={Config.base_domain + "guidelines.html"} >Guidelines<i class="las la-angle-right"></i></a></li>
 					</ul>
 				</div>
 			</section>
+			<div style={{ borderTop: "1px solid #ddd" }}>
+				<BottomMenu />
+			</div>
 		</>
 	);
 }
