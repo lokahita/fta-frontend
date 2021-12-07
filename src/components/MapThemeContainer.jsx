@@ -4,14 +4,7 @@ import { Layers, BasemapLayer, ArcgisTileLayer, ArcgisWMSLayer, GeonodeWMSLayer 
 import {Controls, ZoomControl, AttributionControl} from "./Map/Controls";
 import Map from "./Map/MapThematic";
 export default function MapThemeContainer({ center, zoom, basemap, layers}) {
-    const urlCanopyTile = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_CanopyCover/IndonesiaCanopyCover2018/MapServer'
-    const urlPaddyTile = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_CommodityDistribution/Paddy_Distribution_2019/MapServer'
-    const urlCoffeeDistributionTile = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_CommodityDistribution/Coffe_Distribution_2019/MapServer'
-    const urlShake = 'https://gis.bmkg.go.id/arcgis/rest/services/Shakemap/Shakemap_20170424010111/MapServer'
-    const urlForest = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_Forest_KLHK/Primary_Swamp_Forest/MapServer'
-    const oilPalm = 'https://forests2020.ipb.ac.id/arcgis/rest/services/UNDP/OilPalmAustin/MapServer'
-    const alertDevegetation = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_Devegetation/Devegetation_2019/MapServer'
-    const url ="https://geonode.cifor.org/geoserver/ows"
+  const url ="https://geonode.cifor.org/geoserver/ows"
   return (
     <Map center={fromLonLat(center)} zoom={zoom} basemap={basemap}>
       <Layers>
@@ -22,6 +15,10 @@ export default function MapThemeContainer({ center, zoom, basemap, layers}) {
           <GeonodeWMSLayer url={url} id={'cifor1'} layer={'geonode:KapuasHulu2000_Geo'} visible={layers[0]} />
           <GeonodeWMSLayer url={url} id={'cifor2'} layer={'geonode:KapuasHulu2019_Geo'} visible={layers[1]} />
           <GeonodeWMSLayer url={url} id={'cifor3'} layer={'geonode:KapuasHulu2038_Geo'} visible={layers[2]} />
+          <GeonodeWMSLayer url={url} id={'cifor4'} layer={'geonode:KapuasHulu2057_Geo'} visible={layers[3]} />
+          <GeonodeWMSLayer url={url} id={'cifor5'} layer={'geonode:site_geo'} visible={layers[4]} />
+          <GeonodeWMSLayer url={url} id={'cifor6'} layer={'geonode:priority_site_geo'} visible={layers[5]} />
+          
         {
           /*
         <ArcgisTileLayer url={urlCanopyTile} id={'canopy'} visible={layers[0]} />

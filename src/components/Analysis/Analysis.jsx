@@ -2,7 +2,7 @@ import { Box, Button, Dialog, DialogActions, DialogContent, DialogContentText, D
 import styled from "styled-components";
 import { useState, useEffect, useContext } from 'react';
 import Draggable from 'react-draggable';
-import { Close, Visibility, VisibilityOff } from "@material-ui/icons";
+import { Close, Visibility, VisibilityOff, ShowChart, TableChart, Barchar, GridOn } from "@material-ui/icons";
 import PropTypes from 'prop-types';
 import {
 
@@ -20,17 +20,12 @@ import TableContainer from '@material-ui/core/TableContainer';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
+import { ImageWMS as ImageWMSSource } from 'ol/source/';
 
-import { Map, View } from 'ol';
-import { Image as ImageLayer, Tile as TileLayer, Vector as VectorLayer } from 'ol/layer';
-import { OSM as OSMSource, ImageArcGISRest, TileArcGISRest, Stamen as StamenSource, XYZ as XYZSource, ImageWMS as ImageWMSSource, Vector as VectorSource } from 'ol/source/';
-import { fromLonLat } from 'ol/proj';
-import OSM from "ol/source/OSM";
-import {
-    Attribution,
-    defaults as defaultControls,
-} from 'ol/control'
 import MapThemeContainer from "../MapThemeContainer";
+
+import Chart from './Chart';
+import TableView from './TableView';
 
 function PaperComponent(props) {
     return (
@@ -42,21 +37,22 @@ function PaperComponent(props) {
 
 
 
-export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffered, visibleAnalysis, setVisibleAnalysis }) {
+export default function Analysis({ open, handleCloseAnalysis }) {
 
-    const [center, setCenter] = useState([117, -4]);
-    const [zoom, setZoom] = useState(4.5);
+    const [center, setCenter] = useState([113, -1]);
+    const [zoom, setZoom] = useState(6);
     const [basemap, setBasemap] = useState('imagery');
 
-    const handleClose = () => {
-        handleCloseAnalysis(false);
-    };
+
+    const [idTable, setIdTable] = useState(1);
+    const [idChart, setIdChart] = useState(1);
     const [title, setTitle] = useState('title');
-    const [analysis, setAnalysis] = useState(false);
+    const [chart, setChart] = useState(false);
     const [table, setTable] = useState(false);
     const [url1, setUrl1] = useState("");
     const [url2, setUrl2] = useState("");
     const [url3, setUrl3] = useState("");
+    const [url4, setUrl4] = useState("");
 
     const [layers, setLayers] = useState([true, true, true, true, true, true, true]);
     /*
@@ -68,7 +64,18 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
     const oilPalm = 'https://forests2020.ipb.ac.id/arcgis/rest/services/UNDP/OilPalmAustin/MapServer'
     const alertDevegetation = 'https://forests2020.ipb.ac.id/arcgis/rest/services/Ecosystem_Devegetation/Devegetation_2019/MapServer'
     */
-    const url ="https://geonode.cifor.org/geoserver/ows"
+    const url = "https://geonode.cifor.org/geoserver/ows"
+
+    const handleClose = () => {
+        handleCloseAnalysis(false);
+    };
+
+    function handleCloseTable(e) {
+        setTable(false);
+    }
+    function handleCloseChart(e) {
+        setChart(false);
+    }
 
     useEffect(() => {
         //props.setTheme(false)
@@ -76,7 +83,7 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
 
             var wmsSource = new ImageWMSSource({
                 url: url,
-                params: { 'LAYERS': 'geonode:KapuasHulu2000_Geo' },
+                params: { 'LAYERS': 'geonode:KapuasHulu2057_Geo' },
                 ratio: 1,
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -87,21 +94,21 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
             var graphicUrl = wmsSource.getLegendUrl();
             setUrl1(graphicUrl);
 
-            
+
             var wmsSource2 = new ImageWMSSource({
                 url: url,
-                params: { 'LAYERS': 'geonode:KapuasHulu2019_Geo' },
+                params: { 'LAYERS': 'geonode:site_geo' },
                 ratio: 1,
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
             });
 
-            var graphicUrl2= wmsSource2.getLegendUrl();
+            var graphicUrl2 = wmsSource2.getLegendUrl();
             setUrl2(graphicUrl2);
 
             var wmsSource3 = new ImageWMSSource({
                 url: url,
-                params: { 'LAYERS': 'geonode:KapuasHulu2038_Geo' },
+                params: { 'LAYERS': 'geonode:priority_site_geo' },
                 ratio: 1,
                 serverType: 'geoserver',
                 crossOrigin: 'Anonymous'
@@ -109,6 +116,18 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
 
             var graphicUrl3 = wmsSource3.getLegendUrl();
             setUrl3(graphicUrl3);
+            /*
+            var wmsSource4 = new ImageWMSSource({
+                url: url,
+                params: { 'LAYERS': 'geonode:KapuasHulu2038_Geo' },
+                ratio: 1,
+                serverType: 'geoserver',
+                crossOrigin: 'Anonymous'
+            });
+
+            var graphicUrl4 = wmsSource4.getLegendUrl();
+            setUrl4(graphicUrl4);
+            */
             /*
          
             const requestOptions = {
@@ -295,17 +314,6 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
     }, [open])
 
 
-
-    function openAnalysis(title) {
-        setTitle(title)
-        setAnalysis(true)
-    }
-
-    function openTable(title) {
-        setTitle(title)
-        setTable(true)
-    }
-
     function showHide(id) {
         const data = layers.slice();
         //console.log(data[0]);
@@ -315,6 +323,40 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
         setLayers(data);
 
         //setLayers(oldArray => [...oldArray, newArray])
+    }
+
+    function openTable(id) {
+        console.log(id)
+        setTable(true)
+        setIdTable(id)
+        switch (id) {
+            case 1:
+                setTitle('Kapuas Hulu Vegetation')
+                break;
+            case 2:
+                setTitle('Borneo Potential Restoration Sites')
+                break;
+            case 3:
+                setTitle('Borneo Priority Sites for Restoration')
+                break;
+        }
+    }
+
+    function openChart(id) {
+        console.log(id)
+        setChart(true)
+        setIdChart(id)
+        switch (id) {
+            case 1:
+                setTitle('Kapuas Hulu Vegetation')
+                break;
+            case 2:
+                setTitle('Borneo Potential Restoration Sites')
+                break;
+            case 3:
+                setTitle('Borneo Priority Sites for Restoration')
+                break;
+        }
     }
     /*
     function showHide(id) {
@@ -343,253 +385,374 @@ export default function Analysis({ open, handleCloseAnalysis, mapLayer, setBuffe
     }
     */
     return (
-        <Dialog
-            open={open}
-            PaperComponent={PaperComponent}
-            aria-labelledby="draggable-dialog-title"
-            fullWidth={true}
-            maxWidth="lg"
+        <>
+            <Chart open={chart} id={idChart} title={title} handleCloseChart={(e) => handleCloseChart(e)} />
+            <TableView open={table} id={idTable} title={title} handleCloseTable={(e) => handleCloseTable(e)} />
+            <Dialog
+                open={open}
+                PaperComponent={PaperComponent}
+                aria-labelledby="draggable-dialog-title"
+                fullWidth={true}
+                maxWidth="lg"
 
-        >
-            <DialogTitle style={{ cursor: 'move', padding: '5px 10px', backgroundColor: '#f3f3f3' }} id="draggable-dialog-title">
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <span>Thematic Analysis</span>
-                    <IconButton size="small" onClick={handleClose} >
-                        <Close />
-                    </IconButton>
-                </div>
+            >
+                <DialogTitle style={{ cursor: 'move', padding: '5px 10px', backgroundColor: '#f3f3f3' }} id="draggable-dialog-title">
+                    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                        <span>Thematic Analysis</span>
+                        <IconButton size="small" onClick={handleClose} >
+                            <Close />
+                        </IconButton>
+                    </div>
 
 
-            </DialogTitle>
-            <DialogContent style={{ maxHeight: "75vh", padding: '10px' }} >
-                <p>Forecasting land cover and decision tool</p>
-                <Wrapper>
-                    <LeftContent>
-                        <TableContainer component={Paper}>
-                            <Table aria-label="simple table">
-                                <TableHead>
-                                    <TableRow>
-                                        <TableCell>Data Source</TableCell>
-                                        <TableCell>Data Name</TableCell>
-                                        <TableCell>Legend</TableCell>
-                                        <TableCell>Action</TableCell>
-                                    </TableRow>
-                                </TableHead>
-                                <TableBody>
+                </DialogTitle>
+                <DialogContent style={{ maxHeight: "75vh", padding: '10px' }} >
+                    <p>Forecasting land cover and decision tool</p>
+                    <Wrapper>
+                        <LeftContent>
+                            <TableContainer component={Paper}>
+                                <Table aria-label="simple table">
+                                    <TableHead style={{ backgroundColor: "#ddd" }}>
+                                        <TableRow>
+                                            <TableCell>Data Source</TableCell>
+                                            <TableCell>Legend</TableCell>
+                                            <TableCell>Data Name</TableCell>
+                                            <TableCell>Action</TableCell>
+                                        </TableRow>
+                                    </TableHead>
+                                    <TableBody>
+                                        <TableRow>
+                                            <TableCell colSpan={4} style={{ backgroundColor: "#eee" }}>
+                                                Vegetation cover future projection
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="4">
+                                            <TableCell scope="row">
+                                                CIFOR
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="legend4">
+                                                    <img crossOrigin="Anonymous" referrerPolicy="origin" src={url1} alt={'Kapuas Hulu Vegetation'} />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span>
+                                                    Kapuas Hulu Vegetation
+                                                </span>
+                                                <Button variant="outlined" color="primary" startIcon={<GridOn />} style={{ marginTop: "10px" }} onClick={() => openTable(1)}>
+                                                    View Table
+                                                </Button>
 
-                                    <TableRow key="1">
-                                        <TableCell scope="row">
-                                            CIFOR
-                                        </TableCell>
-                                        <TableCell>
-                                            Kapuas Hulu Vegetation 2000
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="legend1">
-                                            <img crossOrigin="Anonymous" referrerPolicy="origin" src={url1} alt={'Kapuas Hulu Vegetation 2000'} />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(1)} >
-                                                {layers[0] ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow key="2">
-                                        <TableCell scope="row">
-                                            CIFOR
-                                        </TableCell>
-                                        <TableCell>
-                                            Kapuas Hulu Vegetation 2019
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="legend2">
-                                            <img crossOrigin="Anonymous" referrerPolicy="origin" src={url2} alt={'Kapuas Hulu Vegetation 2019'} />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(2)} >
-                                                {layers[1] ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow key="3">
-                                        <TableCell scope="row">
-                                            CIFOR
-                                        </TableCell>
-                                        <TableCell>
-                                            Kapuas Hulu Vegetation 2038
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="legend3">
-                                            <img crossOrigin="Anonymous" referrerPolicy="origin" src={url3} alt={'Kapuas Hulu Vegetation 2038'} />
-                                            </div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(3)} >
-                                                {layers[2] ? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                   
-                                    {
-                                        /*
-                                    
-                                    <TableRow key="1">
-                                        <TableCell scope="row">
-                                            IPB
-                                        </TableCell>
-                                        <TableCell>
-                                            Canopy Cover
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="canopy_legend"></div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(1)} >
-                                                {layers[0]? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
+                                                <Button variant="outlined" color="primary" startIcon={<ShowChart />} style={{ marginTop: "10px" }} onClick={() => openChart(1)}>
+                                                    View Chart
+                                                </Button>
 
-                                    <TableRow key="2">
-                                        <TableCell scope="row">
-                                            IPB
-                                        </TableCell>
-                                        <TableCell>
-                                            Paddy Field Distribution 2019
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="paddy_legend"></div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(2)}  >
-                                            {layers[1]? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow key="3">
-                                        <TableCell scope="row">
-                                            IPB
-                                        </TableCell>
-                                        <TableCell>
-                                            Coffee Distribution
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="coffee_legend"></div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(3)} >
-                                            {layers[2]? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow key="4">
-                                        <TableCell scope="row">
-                                            BMKG
-                                        </TableCell>
-                                        <TableCell>
-                                            Shake Analysis
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="bmkg_legend"></div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(4)} >
-                                            {layers[3]? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow key="5">
-                                        <TableCell scope="row">
-                                            KLHK
-                                        </TableCell>
-                                        <TableCell>
-                                            Primary Swamp Forest
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="forest_legend"></div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(5)} >
-                                            {layers[4]? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow key="6">
-                                        <TableCell scope="row">
-                                            Austin
-                                        </TableCell>
-                                        <TableCell>
-                                            Oil Palm Distribution
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="oil_legend"></div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(6)} >
-                                            {layers[5]? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    <TableRow key="7">
-                                        <TableCell scope="row">
-                                            IPB
-                                        </TableCell>
-                                        <TableCell>
-                                            Devegetation Alert
-                                        </TableCell>
-                                        <TableCell>
-                                            <div id="devegetation_legend"></div>
-                                        </TableCell>
-                                        <TableCell>
-                                            {
-                                                //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
-                                            }
-                                            <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(7)} >
-                                            {layers[6]? <Visibility /> : <VisibilityOff />}
-                                            </IconButton>
-                                        </TableCell>
-                                    </TableRow>
-                                    */
-                                    }
-                                </TableBody>
-                            </Table>
-                        </TableContainer>
-                    </LeftContent>
-                    <RightContent >
-                        <MapThemeContainer style={{ maxHeight: "30vh" }} id="mapThemeContainer" center={center} zoom={zoom} basemap={basemap} layers={layers} />
-                    </RightContent>
-                </Wrapper>
-            </DialogContent>
-        </Dialog>
+                                            </TableCell>
+                                            <TableCell>
+                                                <div style={{ display: "flex", alignItems: 'center', justifyContent: 'space-between' }}>
+                                                    <span>2057</span>
+                                                    <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(4)} >
+                                                        {layers[3] ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+                                                </div>
+                                                <div style={{ display: "flex", alignItems: 'center', justifyContent: 'space-between' }}>
+                                                    <span>2038</span>
+                                                    <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(3)} >
+                                                        {layers[2] ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+                                                </div>
+                                                <div style={{ display: "flex", alignItems: 'center', justifyContent: 'space-between' }}>
+                                                    <span>2019</span>
+                                                    <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(2)} >
+                                                        {layers[1] ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+                                                </div>
+                                                <div style={{ display: "flex", alignItems: 'center', justifyContent: 'space-between' }}>
+                                                    <span>2000</span>
+                                                    <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(1)} >
+                                                        {layers[0] ? <Visibility /> : <VisibilityOff />}
+                                                    </IconButton>
+                                                </div>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow style={{ backgroundColor: "#eee" }}>
+                                            <TableCell colSpan={4} style={{ backgroundColor: "#eee" }}>
+                                                Borneo Potential Restoration Sites
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="3">
+                                            <TableCell scope="row">
+                                                CIFOR
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="legend3">
+                                                    <img crossOrigin="Anonymous" referrerPolicy="origin" src={url3} alt={'Borneo Potential Restoration Sites'} />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span>
+                                                    Borneo Potential Restoration Sites
+                                                </span>
+                                                <br />
+                                                <Button variant="outlined" color="primary" startIcon={<GridOn />} style={{ marginTop: "10px" }} onClick={() => openTable(2)}>
+                                                    View Table
+                                                </Button>
+                                                <Button variant="outlined" color="primary" startIcon={<ShowChart />} style={{ marginTop: "10px" }} onClick={() => openChart(2)}>
+                                                    View Chart
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell>
+                                                
+                                                <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(5)} >
+                                                    {layers[4] ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="2">
+                                            <TableCell scope="row">
+                                                CIFOR
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="legend2">
+                                                    <img crossOrigin="Anonymous" referrerPolicy="origin" src={url2} alt={'Borneo Priority Sites for Restoration'} />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                <span>
+                                                    Borneo Priority Sites for Restoration
+                                                </span>
+                                                <Button variant="outlined" color="primary" startIcon={<GridOn />} style={{ marginTop: "10px" }} onClick={() => openTable(3)}>
+                                                    View Table
+                                                </Button>
+
+                                                <Button variant="outlined" color="primary" startIcon={<ShowChart />} style={{ marginTop: "10px" }} onClick={() => openChart(3)}>
+                                                    View Chart
+                                                </Button>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(6)} >
+                                                    {layers[5] ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+
+
+
+                                        {
+                                            /*
+                                         <TableRow key="3">
+                                            <TableCell scope="row">
+                                                CIFOR
+                                            </TableCell>
+                                            <TableCell>
+                                                Kapuas Hulu Vegetation 2038
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="legend3">
+                                                    <img crossOrigin="Anonymous" referrerPolicy="origin" src={url3} alt={'Kapuas Hulu Vegetation 2038'} />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(3)} >
+                                                    {layers[2] ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="2">
+                                            <TableCell scope="row">
+                                                CIFOR
+                                            </TableCell>
+                                            <TableCell>
+                                                Kapuas Hulu Vegetation 2019
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="legend2">
+                                                    <img crossOrigin="Anonymous" referrerPolicy="origin" src={url2} alt={'Kapuas Hulu Vegetation 2019'} />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(2)} >
+                                                    {layers[1] ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="1">
+                                            <TableCell scope="row">
+                                                CIFOR
+                                            </TableCell>
+                                            <TableCell>
+                                                Kapuas Hulu Vegetation 2000
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="legend1">
+                                                    <img crossOrigin="Anonymous" referrerPolicy="origin" src={url1} alt={'Kapuas Hulu Vegetation 2000'} />
+                                                </div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(1)} >
+                                                    {layers[0] ? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="1">
+                                            <TableCell scope="row">
+                                                IPB
+                                            </TableCell>
+                                            <TableCell>
+                                                Canopy Cover
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="canopy_legend"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span" onClick={() => showHide(1)} >
+                                                    {layers[0]? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+    
+                                        <TableRow key="2">
+                                            <TableCell scope="row">
+                                                IPB
+                                            </TableCell>
+                                            <TableCell>
+                                                Paddy Field Distribution 2019
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="paddy_legend"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(2)}  >
+                                                {layers[1]? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="3">
+                                            <TableCell scope="row">
+                                                IPB
+                                            </TableCell>
+                                            <TableCell>
+                                                Coffee Distribution
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="coffee_legend"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(3)} >
+                                                {layers[2]? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="4">
+                                            <TableCell scope="row">
+                                                BMKG
+                                            </TableCell>
+                                            <TableCell>
+                                                Shake Analysis
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="bmkg_legend"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(4)} >
+                                                {layers[3]? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="5">
+                                            <TableCell scope="row">
+                                                KLHK
+                                            </TableCell>
+                                            <TableCell>
+                                                Primary Swamp Forest
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="forest_legend"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(5)} >
+                                                {layers[4]? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="6">
+                                            <TableCell scope="row">
+                                                Austin
+                                            </TableCell>
+                                            <TableCell>
+                                                Oil Palm Distribution
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="oil_legend"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(6)} >
+                                                {layers[5]? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        <TableRow key="7">
+                                            <TableCell scope="row">
+                                                IPB
+                                            </TableCell>
+                                            <TableCell>
+                                                Devegetation Alert
+                                            </TableCell>
+                                            <TableCell>
+                                                <div id="devegetation_legend"></div>
+                                            </TableCell>
+                                            <TableCell>
+                                                {
+                                                    //<Button variant="outline-secondary" onClick={() => showHide(1)} size="sm" >{layer1?<Eye size={12} />: <EyeSlash size={12} />}</Button>
+                                                }
+                                                <IconButton color="primary" aria-label="upload picture" component="span"  onClick={() => showHide(7)} >
+                                                {layers[6]? <Visibility /> : <VisibilityOff />}
+                                                </IconButton>
+                                            </TableCell>
+                                        </TableRow>
+                                        */
+                                        }
+                                    </TableBody>
+                                </Table>
+                            </TableContainer>
+                        </LeftContent>
+                        <RightContent >
+                            <MapThemeContainer style={{ maxHeight: "30vh" }} id="mapThemeContainer" center={center} zoom={zoom} basemap={basemap} layers={layers} />
+                        </RightContent>
+                    </Wrapper>
+                </DialogContent>
+            </Dialog>
+        </>
     )
 }
 
@@ -601,7 +764,7 @@ const Wrapper = styled.div`
 const LeftContent = styled.div`
   margin:0px;
   flex-grow:1;
-  width: 42%;
+  width: 48%;
   max-height: 450px;
   overflow-y: scroll;
   margin-right: 10px;
